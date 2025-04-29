@@ -44,6 +44,7 @@ Camera camera;
 
 //Modelos
 Model Piso_M;
+Model MaquinaMoneda_M;
 
 Skybox skybox;
 
@@ -200,7 +201,8 @@ int main()
 
 	Piso_M = Model();
 	Piso_M.LoadModel("Models/Piso_obj.obj");
-
+	MaquinaMoneda_M = Model();
+	MaquinaMoneda_M.LoadModel("Models/MaquinaMoneda_obj.obj");
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
@@ -317,8 +319,56 @@ int main()
 		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		Piso_M.RenderModel();
+
+		//Máquinas para introducir moneda
+		//Máquina para lanzamiento de dados
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-25.5f, -0.03f, 32.0f));
+		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		MaquinaMoneda_M.RenderModel();
+
+		//Máquina para línea de boliche
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(25.5f, -0.03f, 32.0f));
+		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		MaquinaMoneda_M.RenderModel();
+
+		//Máquina para jaula de bateo
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-40.0f, -0.03f, 3.5f));
+		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		MaquinaMoneda_M.RenderModel();
+
+		//Máquina para lanzamiento de hacha
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(40.0f, -0.03f, 3.5f));
+		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		MaquinaMoneda_M.RenderModel();
+
+		//Máquina para dardos y globos
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-25.5f, -0.03f, -32.0f));
+		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		MaquinaMoneda_M.RenderModel();
 		
-		
+		//Máquina para golpea al topo
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(25.5f, -0.03f, -32.0f));
+		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		MaquinaMoneda_M.RenderModel();
+
 		
 		//blending: transparencia o traslucidez
 		/*
