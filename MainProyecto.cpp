@@ -45,6 +45,7 @@ Camera camera;
 //Modelos
 Model Piso_M;
 Model MaquinaMoneda_M;
+Model Moneda_M;
 Model banca_M;
 Model bocina;
 Model bote_b;
@@ -213,6 +214,8 @@ int main()
 	Piso_M.LoadModel("Models/Piso_obj.obj");
 	MaquinaMoneda_M = Model();
 	MaquinaMoneda_M.LoadModel("Models/MaquinaMoneda_obj.obj");
+	Moneda_M = Model();
+	Moneda_M.LoadModel("Models/Moneda_obj.obj");
 	banca_M = Model();
 	banca_M.LoadModel("Models/banca.obj");
 	bocina = Model();
@@ -251,24 +254,45 @@ int main()
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
 		0.3f, 0.3f,
 		0.0f, -1.0f, 0.0f);
-	//contador de luces puntuales
-	unsigned int pointLightCount = 0;
 	
 	//==================POINTLIGHTS==================
+	
+	//Contador de luces puntuales
+	unsigned int pointLightCount = 0;
 
-	//Luz puntual de la Lampara
+	//Luz puntual de la Lampara en el centro de la feria
 	pointLights[0] = PointLight(1.0f, 1.0f, 1.0f,
 		//Intensidad ambiental y tonalidad
-		1.5f, 1.5f,
+		1.0f, 8.0f,
 		//Posición x, y, z
-		20.0f, 6.5f, 0.0f,
+		0.0f, 10.0f, 0.0f,
 		//No poner en 0.0f, 0.0f, 0.0f en la linea de abajo
 		1.0f, 0.2f, 0.1f);
 	pointLightCount++;
 
+	//Luz puntual de la Lampara 2
+	pointLights[1] = PointLight(1.0f, 1.0f, 1.0f,
+		//Intensidad ambiental y tonalidad
+		1.0f, 8.0f,
+		//Posición x, y, z
+		-34.0f, 10.0f, -25.0f,
+		//No poner en 0.0f, 0.0f, 0.0f en la linea de abajo
+		1.0f, 0.2f, 0.1f);
+	pointLightCount++;
+
+	//Luz puntual de la Lampara 3
+	pointLights[2] = PointLight(1.0f, 1.0f, 1.0f,
+		//Intensidad ambiental y tonalidad
+		1.0f, 8.0f,
+		//Posición x, y, z
+		34.0f, 10.0f, -25.0f,
+		//No poner en 0.0f, 0.0f, 0.0f en la linea de abajo
+		1.0f, 0.2f, 0.1f);
+	pointLightCount++;
 
 	//==================SPOTLIGHTS==================
-	//contador de luces spot
+	
+	//Contador de luces spot
 	unsigned int spotLightCount = 0;
 	
 	//linterna
@@ -511,9 +535,16 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		hacha_M.RenderModel();
-
-
-
+		
+		/*
+		//Moneda
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(5.0f, 5.0f, 5.0f));
+		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Moneda_M.RenderModel();
+		*/
 		
 		//blending: transparencia o traslucidez
 		/*
