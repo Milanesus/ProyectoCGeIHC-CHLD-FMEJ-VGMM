@@ -68,6 +68,10 @@ Model Base_M;
 Model Borde_M;
 Model Tablero_M;
 Model Dado_M;
+//Línea de boliche
+Model PistaBoliche_M;
+Model Bolo_M;
+Model BolaBoliche_M;
 
 Skybox skybox;
 
@@ -268,6 +272,13 @@ int main()
 	Tablero_M.LoadModel("Models/TableroMesaDados_obj.obj");
 	Dado_M = Model();
 	Dado_M.LoadModel("Models/Dado_HoradeAventura_obj.obj");
+	//Línea de boliche
+	PistaBoliche_M = Model();
+	PistaBoliche_M.LoadModel("Models/PistaBoliche_obj.obj");
+	Bolo_M = Model();
+	Bolo_M.LoadModel("Models/Bolo_obj.obj");
+	BolaBoliche_M = Model();
+	BolaBoliche_M.LoadModel("Models/BolaBoliche_obj.obj");
 
 
 	std::vector<std::string> skyboxFaces;
@@ -400,6 +411,7 @@ int main()
 		glm::mat4 modelauxlamp(1.0);
 		glm::mat4 modelauxbebidas(1.0);
 		glm::mat4 modelauxDados(1.0);
+		glm::mat4 modelauxBoliche(1.0);
 
 		//Piso de la Feria
 		model = glm::mat4(1.0);
@@ -420,7 +432,7 @@ int main()
 
 		//Máquina para línea de boliche
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(25.5f, -0.03f, -32.0f));
+		model = glm::translate(model, glm::vec3(20.5f, -0.03f, -32.0f));
 		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -629,6 +641,95 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		Dado_M.RenderModel();
+
+		//Línea de Boliche
+		//Pista de boliche
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(25.0f, 0.0f, -32.0f));
+		modelauxBoliche = model;
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		PistaBoliche_M.RenderModel();
+
+		//Bola de boliche
+		model = modelauxBoliche;
+		model = glm::translate(model, glm::vec3(0.0f, 1.0f, 8.0f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		BolaBoliche_M.RenderModel();
+
+		//Bolos
+		model = modelauxBoliche;
+		model = glm::translate(model, glm::vec3(0.0f, 0.6f, -5.0f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Bolo_M.RenderModel();
+		
+		model = modelauxBoliche;
+		model = glm::translate(model, glm::vec3(-0.35f, 0.6f, -5.6f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Bolo_M.RenderModel();
+
+		model = modelauxBoliche;
+		model = glm::translate(model, glm::vec3(0.35f, 0.6f, -5.6f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Bolo_M.RenderModel();
+
+		model = modelauxBoliche;
+		model = glm::translate(model, glm::vec3(-0.7f, 0.6f, -6.2f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Bolo_M.RenderModel();
+
+		model = modelauxBoliche;
+		model = glm::translate(model, glm::vec3(0.0f, 0.6f, -6.2f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Bolo_M.RenderModel();
+
+		model = modelauxBoliche;
+		model = glm::translate(model, glm::vec3(0.7f, 0.6f, -6.2f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Bolo_M.RenderModel();
+
+		model = modelauxBoliche;
+		model = glm::translate(model, glm::vec3(-1.05f, 0.6f, -6.8f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Bolo_M.RenderModel();
+
+		model = modelauxBoliche;
+		model = glm::translate(model, glm::vec3(-0.35f, 0.6f, -6.8f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Bolo_M.RenderModel();
+
+		model = modelauxBoliche;
+		model = glm::translate(model, glm::vec3(0.35f, 0.6f, -6.8f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Bolo_M.RenderModel();
+
+		model = modelauxBoliche;
+		model = glm::translate(model, glm::vec3(1.05f, 0.6f, -6.8f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Bolo_M.RenderModel();
 
 
 		/*
