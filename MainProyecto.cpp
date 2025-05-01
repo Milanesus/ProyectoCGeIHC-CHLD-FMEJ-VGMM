@@ -45,6 +45,16 @@ Camera camera;
 //Modelos
 Model Piso_M;
 Model MaquinaMoneda_M;
+Model banca_M;
+Model bocina;
+Model bote_b;
+//Poste de luz
+Model poste;
+Model farola;
+//Lanzamiento de hacha
+Model hacha_M;
+Model cabina;
+Model diana;
 
 Skybox skybox;
 
@@ -198,11 +208,30 @@ int main()
 	brickTexture = Texture("Textures/brick.png");
 	brickTexture.LoadTextureA();
 	*/
-
+	//Modelos 
 	Piso_M = Model();
 	Piso_M.LoadModel("Models/Piso_obj.obj");
 	MaquinaMoneda_M = Model();
 	MaquinaMoneda_M.LoadModel("Models/MaquinaMoneda_obj.obj");
+	banca_M = Model();
+	banca_M.LoadModel("Models/banca.obj");
+	bocina = Model();
+	bocina.LoadModel("Models/bocina.obj");
+	bote_b = Model();
+	bote_b.LoadModel("Models/bote_b.obj");
+	//Poste de luz
+	poste = Model();
+	poste.LoadModel("Models/poste.obj");
+	farola = Model();
+	farola.LoadModel("Models/lampara.obj");
+	//Lanzamiento de hacha
+	hacha_M = Model();
+	hacha_M.LoadModel("Models/hacha.obj");
+	cabina = Model();
+	cabina.LoadModel("Models/cabina_hacha.obj");
+	diana = Model();
+	diana.LoadModel("Models/diana_hacha.obj");
+
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
@@ -311,6 +340,7 @@ int main()
 			
 		glm::mat4 model(1.0);
 		//glm::mat4 modelaux(1.0);
+		glm::mat4 modelauxlamp(1.0);
 
 		//Piso de la Feria
 		model = glm::mat4(1.0);
@@ -368,6 +398,121 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		MaquinaMoneda_M.RenderModel();
+
+		//Bancas
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-35.5f, 1.2, 17.0));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		banca_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(35.5f, 1.2f, 17.0));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		banca_M.RenderModel();
+
+		//Bocinas
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-1.0f, 1.5f, -40.0));
+		model = glm::rotate(model, -45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		//model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		bocina.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(1.0f, 1.5f, -40.0));
+		model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		//model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		bocina.RenderModel();
+
+		//Botes
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-25.0f, 0.9f, 0.0));
+		//model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		bote_b.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(25.0f, 0.9f, 0.0));
+		//model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		bote_b.RenderModel();
+
+		//Postes de luz
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 5.0f, 0.0));
+		modelauxlamp = model;
+		model = glm::scale(model, glm::vec3(0.3f, 0.5f, 0.3f));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		poste.RenderModel();
+		model = modelauxlamp;
+		model = glm::translate(model, glm::vec3(0.0f, 5.0f, 0.0));
+		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		//Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		farola.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-34.0f, 5.0f, -25.0));
+		modelauxlamp = model;
+		model = glm::scale(model, glm::vec3(0.3f, 0.5f, 0.3f));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		poste.RenderModel();
+		model = modelauxlamp;
+		model = glm::translate(model, glm::vec3(0.0f, 5.0f, 0.0));
+		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		//Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		farola.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(34.0f, 5.0f, -25.0));
+		modelauxlamp = model;
+		model = glm::scale(model, glm::vec3(0.3f, 0.5f, 0.3f));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		poste.RenderModel();
+		model = modelauxlamp;
+		model = glm::translate(model, glm::vec3(0.0f, 5.0f, 0.0));
+		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		//Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		farola.RenderModel();
+
+		//====== ATRACCIONES ======
+		//Lanzamiento de hacha
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(43.0f, 3.2f, 0.8f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		cabina.RenderModel();
+		//diana
+		model = glm::translate(model, glm::vec3(15.0f, 5.0f, 0.0f));
+		//model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		diana.RenderModel();
+		//Hacha
+		//model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-3.0f, -5.0f, 0.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		//model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		hacha_M.RenderModel();
+
+
 
 		
 		//blending: transparencia o traslucidez
