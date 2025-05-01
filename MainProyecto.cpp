@@ -56,6 +56,14 @@ Model farola;
 Model hacha_M;
 Model cabina;
 Model diana;
+//Puesto de bebidas
+Model puesto_bebidas;
+Model botellas;
+Model aguas;
+Model latas;
+Model vasos;
+Model tarro;
+
 
 Skybox skybox;
 
@@ -162,16 +170,16 @@ void CreateObjects()
 
 	};
 
-	
-	Mesh *obj1 = new Mesh();
+
+	Mesh* obj1 = new Mesh();
 	obj1->CreateMesh(vertices, indices, 32, 12);
 	meshList.push_back(obj1);//[0]
 
-	Mesh *obj2 = new Mesh();
+	Mesh* obj2 = new Mesh();
 	obj2->CreateMesh(vertices, indices, 32, 12);
 	meshList.push_back(obj2);//[1]
 
-	Mesh *obj3 = new Mesh();
+	Mesh* obj3 = new Mesh();
 	obj3->CreateMesh(floorVertices, floorIndices, 32, 6);
 	meshList.push_back(obj3);//[2]
 
@@ -188,7 +196,7 @@ void CreateObjects()
 
 void CreateShaders()
 {
-	Shader *shader1 = new Shader();
+	Shader* shader1 = new Shader();
 	shader1->CreateFromFiles(vShader, fShader);
 	shaderList.push_back(*shader1);
 }
@@ -234,6 +242,19 @@ int main()
 	cabina.LoadModel("Models/cabina_hacha.obj");
 	diana = Model();
 	diana.LoadModel("Models/diana_hacha.obj");
+	//Puesto de bebidas
+	puesto_bebidas = Model();
+	puesto_bebidas.LoadModel("Models/P_bebidas/bebidas_p.obj");
+	botellas = Model();
+	botellas.LoadModel("Models/P_bebidas/botellas.obj");
+	aguas = Model();
+	aguas.LoadModel("Models/P_bebidas/aguas.obj");
+	latas = Model();
+	latas.LoadModel("Models/P_bebidas/latas.obj");
+	vasos = Model();
+	vasos.LoadModel("Models/P_bebidas/vaso.obj");
+	tarro = Model();
+	tarro.LoadModel("Models/P_bebidas/tarro.obj");
 
 
 	std::vector<std::string> skyboxFaces;
@@ -254,9 +275,9 @@ int main()
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
 		0.3f, 0.3f,
 		0.0f, -1.0f, 0.0f);
-	
+
 	//==================POINTLIGHTS==================
-	
+
 	//Contador de luces puntuales
 	unsigned int pointLightCount = 0;
 
@@ -291,10 +312,10 @@ int main()
 	pointLightCount++;
 
 	//==================SPOTLIGHTS==================
-	
+
 	//Contador de luces spot
 	unsigned int spotLightCount = 0;
-	
+
 	//linterna
 	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
 		//Intensidad ambiental y tonalidad
@@ -308,8 +329,8 @@ int main()
 		//Ángulo de apertura
 		5.0f);
 	spotLightCount++;
-	
-	
+
+
 	//se crean mas luces puntuales y spotlight 
 
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
@@ -339,7 +360,7 @@ int main()
 		uniformView = shaderList[0].GetViewLocation();
 		uniformEyePosition = shaderList[0].GetEyePositionLocation();
 		uniformColor = shaderList[0].getColorLocation();
-		
+
 		//información en el shader de intensidad especular y brillo
 		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
 		uniformShininess = shaderList[0].GetShininessLocation();
@@ -350,21 +371,22 @@ int main()
 
 		// luz ligada a la cámara de tipo flash
 		//sirve para que en tiempo de ejecución (dentro del while) se cambien propiedades de la luz
-			glm::vec3 lowerLight = camera.getCameraPosition();
+		glm::vec3 lowerLight = camera.getCameraPosition();
 		lowerLight.y -= 0.3f;
 		spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
 
 		//información al shader de fuentes de iluminación
 		shaderList[0].SetDirectionalLight(&mainLight);
-		
+
 		//Pasar luces al shader
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
-		
-			
+
+
 		glm::mat4 model(1.0);
 		//glm::mat4 modelaux(1.0);
 		glm::mat4 modelauxlamp(1.0);
+		glm::mat4 modelauxbebidas(1.0);
 
 		//Piso de la Feria
 		model = glm::mat4(1.0);
@@ -414,7 +436,7 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		MaquinaMoneda_M.RenderModel();
-		
+
 		//Máquina para golpea al topo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(25.5f, -0.03f, -32.0f));
@@ -535,7 +557,7 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		hacha_M.RenderModel();
-		
+
 		/*
 		//Moneda
 		model = glm::mat4(1.0);
@@ -545,7 +567,80 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		Moneda_M.RenderModel();
 		*/
-		
+
+		//====== PUESTOS ======
+		//Puesto de bebidas
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(12.5f, 2.63f, 10.0f));
+		//model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		puesto_bebidas.RenderModel();
+		//Aguas
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		aguas.RenderModel();
+		//Botellas
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		botellas.RenderModel();
+		//Latas
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		latas.RenderModel();
+		//Vasos
+		modelauxbebidas = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//1
+		vasos.RenderModel();
+		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//2
+		vasos.RenderModel();
+		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//3
+		vasos.RenderModel();
+		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//4
+		vasos.RenderModel();
+		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//5
+		vasos.RenderModel();
+		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//6
+		vasos.RenderModel();
+		model = modelauxbebidas;
+		model = glm::translate(model, glm::vec3(2.0f,0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//7
+		vasos.RenderModel();
+		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//8
+		vasos.RenderModel();
+		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//9
+		vasos.RenderModel();
+		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//10
+		vasos.RenderModel();
+		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//11
+		vasos.RenderModel();
+		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//12
+		vasos.RenderModel();
+		//Tarro
+		model = modelauxbebidas;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tarro.RenderModel();
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tarro.RenderModel();
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tarro.RenderModel();
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tarro.RenderModel();
+
+
+
+
+
 		//blending: transparencia o traslucidez
 		/*
 		glEnable(GL_BLEND);
