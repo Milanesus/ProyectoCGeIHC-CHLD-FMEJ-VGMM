@@ -63,7 +63,11 @@ Model aguas;
 Model latas;
 Model vasos;
 Model tarro;
-
+//Mesa de dados
+Model Base_M;
+Model Borde_M;
+Model Tablero_M;
+Model Dado_M;
 
 Skybox skybox;
 
@@ -255,6 +259,15 @@ int main()
 	vasos.LoadModel("Models/P_bebidas/vaso.obj");
 	tarro = Model();
 	tarro.LoadModel("Models/P_bebidas/tarro.obj");
+	//Mesa de dados
+	Base_M = Model();
+	Base_M.LoadModel("Models/Base_obj.obj");
+	Borde_M = Model();
+	Borde_M.LoadModel("Models/BordeMesaDados_obj.obj");
+	Tablero_M = Model();
+	Tablero_M.LoadModel("Models/TableroMesaDados_obj.obj");
+	Dado_M = Model();
+	Dado_M.LoadModel("Models/Dado_HoradeAventura_obj.obj");
 
 
 	std::vector<std::string> skyboxFaces;
@@ -384,9 +397,9 @@ int main()
 
 
 		glm::mat4 model(1.0);
-		//glm::mat4 modelaux(1.0);
 		glm::mat4 modelauxlamp(1.0);
 		glm::mat4 modelauxbebidas(1.0);
+		glm::mat4 modelauxDados(1.0);
 
 		//Piso de la Feria
 		model = glm::mat4(1.0);
@@ -399,7 +412,7 @@ int main()
 		//Máquinas para introducir moneda
 		//Máquina para lanzamiento de dados
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-25.5f, -0.03f, 32.0f));
+		model = glm::translate(model, glm::vec3(-20.0f, -0.03f, -32.0f));
 		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -407,7 +420,7 @@ int main()
 
 		//Máquina para línea de boliche
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(25.5f, -0.03f, 32.0f));
+		model = glm::translate(model, glm::vec3(25.5f, -0.03f, -32.0f));
 		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -415,7 +428,7 @@ int main()
 
 		//Máquina para jaula de bateo
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-40.0f, -0.03f, 3.5f));
+		model = glm::translate(model, glm::vec3(-40.0f, -0.03f, -3.5f));
 		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -423,7 +436,7 @@ int main()
 
 		//Máquina para lanzamiento de hacha
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(40.0f, -0.03f, 3.5f));
+		model = glm::translate(model, glm::vec3(37.0f, -0.03f, -3.5f));
 		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -431,7 +444,7 @@ int main()
 
 		//Máquina para dardos y globos
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-25.5f, -0.03f, -32.0f));
+		model = glm::translate(model, glm::vec3(-25.5f, -0.03f, 32.0f));
 		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -439,7 +452,7 @@ int main()
 
 		//Máquina para golpea al topo
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(25.5f, -0.03f, -32.0f));
+		model = glm::translate(model, glm::vec3(25.5f, -0.03f, 32.0f));
 		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -538,7 +551,7 @@ int main()
 		//====== ATRACCIONES ======
 		//Lanzamiento de hacha
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(43.0f, 3.2f, 0.8f));
+		model = glm::translate(model, glm::vec3(40.0f, 3.2f, -3.5f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -558,11 +571,71 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		hacha_M.RenderModel();
 
+		//Mesa de dados
+		//Base de la mesa
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-25.0f, 2.0f, -32.0f));
+		modelauxDados = model;
+		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Base_M.RenderModel();
+
+		//Borde de la mesa
+		model = modelauxDados;
+		model = glm::translate(model, glm::vec3(0.0f, 1.51f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Borde_M.RenderModel();
+
+		//Tablero de la mesa de dados
+		model = modelauxDados;
+		model = glm::translate(model, glm::vec3(0.0f, 1.15f, 0.0f));
+		modelauxDados = model;
+		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Tablero_M.RenderModel();
+
+		//Monedas decorativas para la mesa de dados
+		model = modelauxDados;
+		model = glm::translate(model, glm::vec3(2.0f, 0.08f, -0.2f));
+		model = glm::rotate(model, 270 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::rotate(model, 270 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Moneda_M.RenderModel();
+
+		model = modelauxDados;
+		model = glm::translate(model, glm::vec3(2.0f, 0.08f, 0.2f));
+		model = glm::rotate(model, 270 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::rotate(model, 270 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Moneda_M.RenderModel();
+
+		//Dados para la mesa de dados
+		model = modelauxDados;
+		model = glm::translate(model, glm::vec3(2.0f, 0.11f, 1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Dado_M.RenderModel();
+
+		model = modelauxDados;
+		model = glm::translate(model, glm::vec3(2.0f, 0.11f, 1.2f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Dado_M.RenderModel();
+
+
 		/*
 		//Moneda
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(5.0f, 5.0f, 5.0f));
-		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+		model = glm::translate(model, glm::vec3(-20.0f, 2.74f, -31.5f));
+		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		Moneda_M.RenderModel();
