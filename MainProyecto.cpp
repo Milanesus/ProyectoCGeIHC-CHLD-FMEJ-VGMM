@@ -45,6 +45,7 @@ Camera camera;
 //Modelos
 Model Piso_M;
 Model MaquinaMoneda_M;
+Model Moneda_M;
 Model banca_M;
 Model bocina;
 Model bote_b;
@@ -55,6 +56,28 @@ Model farola;
 Model hacha_M;
 Model cabina;
 Model diana;
+//Puesto de bebidas
+Model puesto_bebidas;
+Model botellas;
+Model aguas;
+Model latas;
+Model vasos;
+Model tarro;
+//Mesa de dados
+Model Base_M;
+Model Borde_M;
+Model Tablero_M;
+Model Dado_M;
+//Línea de boliche
+Model PistaBoliche_M;
+Model Bolo_M;
+Model BolaBoliche_M;
+//Puesto de pizzas
+Model PuestoPizzas_M;
+Model PizzaLimon_M;
+Model PizzaPeperoni_M;
+Model PizzaQueso_M;
+Model PizzaHawaiana_M;
 
 Skybox skybox;
 
@@ -161,16 +184,16 @@ void CreateObjects()
 
 	};
 
-	
-	Mesh *obj1 = new Mesh();
+
+	Mesh* obj1 = new Mesh();
 	obj1->CreateMesh(vertices, indices, 32, 12);
 	meshList.push_back(obj1);//[0]
 
-	Mesh *obj2 = new Mesh();
+	Mesh* obj2 = new Mesh();
 	obj2->CreateMesh(vertices, indices, 32, 12);
 	meshList.push_back(obj2);//[1]
 
-	Mesh *obj3 = new Mesh();
+	Mesh* obj3 = new Mesh();
 	obj3->CreateMesh(floorVertices, floorIndices, 32, 6);
 	meshList.push_back(obj3);//[2]
 
@@ -187,7 +210,7 @@ void CreateObjects()
 
 void CreateShaders()
 {
-	Shader *shader1 = new Shader();
+	Shader* shader1 = new Shader();
 	shader1->CreateFromFiles(vShader, fShader);
 	shaderList.push_back(*shader1);
 }
@@ -213,6 +236,8 @@ int main()
 	Piso_M.LoadModel("Models/Piso_obj.obj");
 	MaquinaMoneda_M = Model();
 	MaquinaMoneda_M.LoadModel("Models/MaquinaMoneda_obj.obj");
+	Moneda_M = Model();
+	Moneda_M.LoadModel("Models/Moneda_obj.obj");
 	banca_M = Model();
 	banca_M.LoadModel("Models/banca.obj");
 	bocina = Model();
@@ -231,6 +256,46 @@ int main()
 	cabina.LoadModel("Models/cabina_hacha.obj");
 	diana = Model();
 	diana.LoadModel("Models/diana_hacha.obj");
+	//Puesto de bebidas
+	puesto_bebidas = Model();
+	puesto_bebidas.LoadModel("Models/P_bebidas/bebidas_p.obj");
+	botellas = Model();
+	botellas.LoadModel("Models/P_bebidas/botellas.obj");
+	aguas = Model();
+	aguas.LoadModel("Models/P_bebidas/aguas.obj");
+	latas = Model();
+	latas.LoadModel("Models/P_bebidas/latas.obj");
+	vasos = Model();
+	vasos.LoadModel("Models/P_bebidas/vaso.obj");
+	tarro = Model();
+	tarro.LoadModel("Models/P_bebidas/tarro.obj");
+	//Mesa de dados
+	Base_M = Model();
+	Base_M.LoadModel("Models/Base_obj.obj");
+	Borde_M = Model();
+	Borde_M.LoadModel("Models/BordeMesaDados_obj.obj");
+	Tablero_M = Model();
+	Tablero_M.LoadModel("Models/TableroMesaDados_obj.obj");
+	Dado_M = Model();
+	Dado_M.LoadModel("Models/Dado_HoradeAventura_obj.obj");
+	//Línea de boliche
+	PistaBoliche_M = Model();
+	PistaBoliche_M.LoadModel("Models/PistaBoliche_obj.obj");
+	Bolo_M = Model();
+	Bolo_M.LoadModel("Models/Bolo_obj.obj");
+	BolaBoliche_M = Model();
+	BolaBoliche_M.LoadModel("Models/BolaBoliche_obj.obj");
+	//Puesto de Pizzas
+	PuestoPizzas_M = Model();
+	PuestoPizzas_M.LoadModel("Models/PuestoPizzas_obj.obj");
+	PizzaLimon_M = Model();
+	PizzaLimon_M.LoadModel("Models/PizzaLimon_obj.obj");
+	PizzaPeperoni_M = Model();
+	PizzaPeperoni_M.LoadModel("Models/PizzaPeperoni_obj.obj");
+	PizzaQueso_M = Model();
+	PizzaQueso_M.LoadModel("Models/PizzaQueso_obj.obj");
+	PizzaHawaiana_M = Model();
+	PizzaHawaiana_M.LoadModel("Models/PizzaHawaiana_obj.obj");
 
 
 	std::vector<std::string> skyboxFaces;
@@ -251,26 +316,47 @@ int main()
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
 		0.3f, 0.3f,
 		0.0f, -1.0f, 0.0f);
-	//contador de luces puntuales
-	unsigned int pointLightCount = 0;
-	
+
 	//==================POINTLIGHTS==================
 
-	//Luz puntual de la Lampara
-	pointLights[0] = PointLight(1.0f, 1.0f, 1.0f,
+	//Contador de luces puntuales
+	unsigned int pointLightCount = 0;
+
+	//Luz puntual de la Lampara en el centro de la feria
+	pointLights[0] = PointLight(1.0f, 0.0f, 0.0f,
 		//Intensidad ambiental y tonalidad
-		1.5f, 1.5f,
+		1.0f, 8.0f,
 		//Posición x, y, z
-		20.0f, 6.5f, 0.0f,
+		0.0f, 10.0f, 0.0f,
 		//No poner en 0.0f, 0.0f, 0.0f en la linea de abajo
 		1.0f, 0.2f, 0.1f);
 	pointLightCount++;
 
+	//Luz puntual de la Lampara 2
+	pointLights[1] = PointLight(0.0f, 1.0f, 0.0f,
+		//Intensidad ambiental y tonalidad
+		1.0f, 8.0f,
+		//Posición x, y, z
+		-34.0f, 10.0f, -25.0f,
+		//No poner en 0.0f, 0.0f, 0.0f en la linea de abajo
+		1.0f, 0.2f, 0.1f);
+	pointLightCount++;
+
+	//Luz puntual de la Lampara 3
+	pointLights[2] = PointLight(0.0f, 0.0f, 1.0f,
+		//Intensidad ambiental y tonalidad
+		1.0f, 8.0f,
+		//Posición x, y, z
+		34.0f, 10.0f, -25.0f,
+		//No poner en 0.0f, 0.0f, 0.0f en la linea de abajo
+		1.0f, 0.2f, 0.1f);
+	pointLightCount++;
 
 	//==================SPOTLIGHTS==================
-	//contador de luces spot
+
+	//Contador de luces spot
 	unsigned int spotLightCount = 0;
-	
+
 	//linterna
 	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
 		//Intensidad ambiental y tonalidad
@@ -284,8 +370,8 @@ int main()
 		//Ángulo de apertura
 		5.0f);
 	spotLightCount++;
-	
-	
+
+
 	//se crean mas luces puntuales y spotlight 
 
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
@@ -315,7 +401,7 @@ int main()
 		uniformView = shaderList[0].GetViewLocation();
 		uniformEyePosition = shaderList[0].GetEyePositionLocation();
 		uniformColor = shaderList[0].getColorLocation();
-		
+
 		//información en el shader de intensidad especular y brillo
 		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
 		uniformShininess = shaderList[0].GetShininessLocation();
@@ -326,21 +412,24 @@ int main()
 
 		// luz ligada a la cámara de tipo flash
 		//sirve para que en tiempo de ejecución (dentro del while) se cambien propiedades de la luz
-			glm::vec3 lowerLight = camera.getCameraPosition();
+		glm::vec3 lowerLight = camera.getCameraPosition();
 		lowerLight.y -= 0.3f;
 		spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
 
 		//información al shader de fuentes de iluminación
 		shaderList[0].SetDirectionalLight(&mainLight);
-		
+
 		//Pasar luces al shader
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
-		
-			
+
+
 		glm::mat4 model(1.0);
-		//glm::mat4 modelaux(1.0);
 		glm::mat4 modelauxlamp(1.0);
+		glm::mat4 modelauxbebidas(1.0);
+		glm::mat4 modelauxPizzas(1.0);
+		glm::mat4 modelauxDados(1.0);
+		glm::mat4 modelauxBoliche(1.0);
 
 		//Piso de la Feria
 		model = glm::mat4(1.0);
@@ -353,7 +442,7 @@ int main()
 		//Máquinas para introducir moneda
 		//Máquina para lanzamiento de dados
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-25.5f, -0.03f, 32.0f));
+		model = glm::translate(model, glm::vec3(-20.0f, -0.03f, -32.0f));
 		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -361,7 +450,7 @@ int main()
 
 		//Máquina para línea de boliche
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(25.5f, -0.03f, 32.0f));
+		model = glm::translate(model, glm::vec3(20.5f, -0.03f, -32.0f));
 		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -369,7 +458,7 @@ int main()
 
 		//Máquina para jaula de bateo
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-40.0f, -0.03f, 3.5f));
+		model = glm::translate(model, glm::vec3(-40.0f, -0.03f, -3.5f));
 		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -377,7 +466,7 @@ int main()
 
 		//Máquina para lanzamiento de hacha
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(40.0f, -0.03f, 3.5f));
+		model = glm::translate(model, glm::vec3(37.0f, -0.03f, -3.5f));
 		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -385,15 +474,15 @@ int main()
 
 		//Máquina para dardos y globos
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-25.5f, -0.03f, -32.0f));
+		model = glm::translate(model, glm::vec3(-25.5f, -0.03f, 32.0f));
 		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		MaquinaMoneda_M.RenderModel();
-		
+
 		//Máquina para golpea al topo
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(25.5f, -0.03f, -32.0f));
+		model = glm::translate(model, glm::vec3(25.5f, -0.03f, 32.0f));
 		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -492,7 +581,7 @@ int main()
 		//====== ATRACCIONES ======
 		//Lanzamiento de hacha
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(43.0f, 3.2f, 0.8f));
+		model = glm::translate(model, glm::vec3(40.0f, 3.2f, -3.5f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -512,9 +601,275 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		hacha_M.RenderModel();
 
+		//Mesa de dados
+		//Base de la mesa
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-25.0f, 2.0f, -32.0f));
+		modelauxDados = model;
+		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Base_M.RenderModel();
 
+		//Borde de la mesa
+		model = modelauxDados;
+		model = glm::translate(model, glm::vec3(0.0f, 1.51f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Borde_M.RenderModel();
 
+		//Tablero de la mesa de dados
+		model = modelauxDados;
+		model = glm::translate(model, glm::vec3(0.0f, 1.15f, 0.0f));
+		modelauxDados = model;
+		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Tablero_M.RenderModel();
+
+		//Monedas decorativas para la mesa de dados
+		model = modelauxDados;
+		model = glm::translate(model, glm::vec3(2.0f, 0.08f, -0.2f));
+		model = glm::rotate(model, 270 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::rotate(model, 270 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Moneda_M.RenderModel();
+
+		model = modelauxDados;
+		model = glm::translate(model, glm::vec3(2.0f, 0.08f, 0.2f));
+		model = glm::rotate(model, 270 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::rotate(model, 270 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Moneda_M.RenderModel();
+
+		//Dados para la mesa de dados
+		model = modelauxDados;
+		model = glm::translate(model, glm::vec3(2.0f, 0.11f, 1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Dado_M.RenderModel();
+
+		model = modelauxDados;
+		model = glm::translate(model, glm::vec3(2.0f, 0.11f, 1.2f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Dado_M.RenderModel();
+
+		//Línea de Boliche
+		//Pista de boliche
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(25.0f, 0.0f, -32.0f));
+		modelauxBoliche = model;
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		PistaBoliche_M.RenderModel();
+
+		//Bola de boliche
+		model = modelauxBoliche;
+		model = glm::translate(model, glm::vec3(0.0f, 1.0f, 8.0f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		BolaBoliche_M.RenderModel();
+
+		//Bolos
+		model = modelauxBoliche;
+		model = glm::translate(model, glm::vec3(0.0f, 0.6f, -5.0f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Bolo_M.RenderModel();
 		
+		model = modelauxBoliche;
+		model = glm::translate(model, glm::vec3(-0.35f, 0.6f, -5.6f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Bolo_M.RenderModel();
+
+		model = modelauxBoliche;
+		model = glm::translate(model, glm::vec3(0.35f, 0.6f, -5.6f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Bolo_M.RenderModel();
+
+		model = modelauxBoliche;
+		model = glm::translate(model, glm::vec3(-0.7f, 0.6f, -6.2f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Bolo_M.RenderModel();
+
+		model = modelauxBoliche;
+		model = glm::translate(model, glm::vec3(0.0f, 0.6f, -6.2f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Bolo_M.RenderModel();
+
+		model = modelauxBoliche;
+		model = glm::translate(model, glm::vec3(0.7f, 0.6f, -6.2f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Bolo_M.RenderModel();
+
+		model = modelauxBoliche;
+		model = glm::translate(model, glm::vec3(-1.05f, 0.6f, -6.8f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Bolo_M.RenderModel();
+
+		model = modelauxBoliche;
+		model = glm::translate(model, glm::vec3(-0.35f, 0.6f, -6.8f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Bolo_M.RenderModel();
+
+		model = modelauxBoliche;
+		model = glm::translate(model, glm::vec3(0.35f, 0.6f, -6.8f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Bolo_M.RenderModel();
+
+		model = modelauxBoliche;
+		model = glm::translate(model, glm::vec3(1.05f, 0.6f, -6.8f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Bolo_M.RenderModel();
+
+
+		/*
+		//Moneda
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-20.0f, 2.74f, -31.5f));
+		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		Moneda_M.RenderModel();
+		*/
+
+		//====== PUESTOS ======
+		//Puesto de bebidas
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(12.5f, 2.63f, 10.0f));
+		//model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		puesto_bebidas.RenderModel();
+		//Aguas
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		aguas.RenderModel();
+		//Botellas
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		botellas.RenderModel();
+		//Latas
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		latas.RenderModel();
+		//Vasos
+		modelauxbebidas = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//1
+		vasos.RenderModel();
+		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//2
+		vasos.RenderModel();
+		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//3
+		vasos.RenderModel();
+		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//4
+		vasos.RenderModel();
+		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//5
+		vasos.RenderModel();
+		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//6
+		vasos.RenderModel();
+		model = modelauxbebidas;
+		model = glm::translate(model, glm::vec3(2.0f,0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//7
+		vasos.RenderModel();
+		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//8
+		vasos.RenderModel();
+		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//9
+		vasos.RenderModel();
+		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//10
+		vasos.RenderModel();
+		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//11
+		vasos.RenderModel();
+		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//12
+		vasos.RenderModel();
+		//Tarro
+		model = modelauxbebidas;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tarro.RenderModel();
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tarro.RenderModel();
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tarro.RenderModel();
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tarro.RenderModel();
+
+		//Puesto de Pizzas
+		//Puesto
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-12.5f, 3.0f, 10.0f));
+		modelauxPizzas = model;
+		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		PuestoPizzas_M.RenderModel();
+
+		//Pizzas
+		model = modelauxPizzas;
+		model = glm::translate(model, glm::vec3(-3.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.15f, 0.15f, 0.15f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		PizzaLimon_M.RenderModel();
+		
+		model = modelauxPizzas;
+		model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.15f, 0.15f, 0.15f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		PizzaPeperoni_M.RenderModel();
+
+		model = modelauxPizzas;
+		model = glm::translate(model, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.15f, 0.15f, 0.15f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		PizzaQueso_M.RenderModel();
+
+		model = modelauxPizzas;
+		model = glm::translate(model, glm::vec3(3.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.15f, 0.15f, 0.15f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		PizzaHawaiana_M.RenderModel();
+
+
+
 		//blending: transparencia o traslucidez
 		/*
 		glEnable(GL_BLEND);
