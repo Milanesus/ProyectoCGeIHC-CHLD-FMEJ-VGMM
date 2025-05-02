@@ -72,6 +72,12 @@ Model Dado_M;
 Model PistaBoliche_M;
 Model Bolo_M;
 Model BolaBoliche_M;
+//Puesto de pizzas
+Model PuestoPizzas_M;
+Model PizzaLimon_M;
+Model PizzaPeperoni_M;
+Model PizzaQueso_M;
+Model PizzaHawaiana_M;
 
 Skybox skybox;
 
@@ -279,6 +285,17 @@ int main()
 	Bolo_M.LoadModel("Models/Bolo_obj.obj");
 	BolaBoliche_M = Model();
 	BolaBoliche_M.LoadModel("Models/BolaBoliche_obj.obj");
+	//Puesto de Pizzas
+	PuestoPizzas_M = Model();
+	PuestoPizzas_M.LoadModel("Models/PuestoPizzas_obj.obj");
+	PizzaLimon_M = Model();
+	PizzaLimon_M.LoadModel("Models/PizzaLimon_obj.obj");
+	PizzaPeperoni_M = Model();
+	PizzaPeperoni_M.LoadModel("Models/PizzaPeperoni_obj.obj");
+	PizzaQueso_M = Model();
+	PizzaQueso_M.LoadModel("Models/PizzaQueso_obj.obj");
+	PizzaHawaiana_M = Model();
+	PizzaHawaiana_M.LoadModel("Models/PizzaHawaiana_obj.obj");
 
 
 	std::vector<std::string> skyboxFaces;
@@ -306,7 +323,7 @@ int main()
 	unsigned int pointLightCount = 0;
 
 	//Luz puntual de la Lampara en el centro de la feria
-	pointLights[0] = PointLight(1.0f, 1.0f, 1.0f,
+	pointLights[0] = PointLight(1.0f, 0.0f, 0.0f,
 		//Intensidad ambiental y tonalidad
 		1.0f, 8.0f,
 		//Posición x, y, z
@@ -316,7 +333,7 @@ int main()
 	pointLightCount++;
 
 	//Luz puntual de la Lampara 2
-	pointLights[1] = PointLight(1.0f, 1.0f, 1.0f,
+	pointLights[1] = PointLight(0.0f, 1.0f, 0.0f,
 		//Intensidad ambiental y tonalidad
 		1.0f, 8.0f,
 		//Posición x, y, z
@@ -326,7 +343,7 @@ int main()
 	pointLightCount++;
 
 	//Luz puntual de la Lampara 3
-	pointLights[2] = PointLight(1.0f, 1.0f, 1.0f,
+	pointLights[2] = PointLight(0.0f, 0.0f, 1.0f,
 		//Intensidad ambiental y tonalidad
 		1.0f, 8.0f,
 		//Posición x, y, z
@@ -410,6 +427,7 @@ int main()
 		glm::mat4 model(1.0);
 		glm::mat4 modelauxlamp(1.0);
 		glm::mat4 modelauxbebidas(1.0);
+		glm::mat4 modelauxPizzas(1.0);
 		glm::mat4 modelauxDados(1.0);
 		glm::mat4 modelauxBoliche(1.0);
 
@@ -811,7 +829,44 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		tarro.RenderModel();
 
+		//Puesto de Pizzas
+		//Puesto
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-12.5f, 3.0f, 10.0f));
+		modelauxPizzas = model;
+		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		PuestoPizzas_M.RenderModel();
 
+		//Pizzas
+		model = modelauxPizzas;
+		model = glm::translate(model, glm::vec3(-3.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.15f, 0.15f, 0.15f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		PizzaLimon_M.RenderModel();
+		
+		model = modelauxPizzas;
+		model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.15f, 0.15f, 0.15f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		PizzaPeperoni_M.RenderModel();
+
+		model = modelauxPizzas;
+		model = glm::translate(model, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.15f, 0.15f, 0.15f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		PizzaQueso_M.RenderModel();
+
+		model = modelauxPizzas;
+		model = glm::translate(model, glm::vec3(3.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.15f, 0.15f, 0.15f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		PizzaHawaiana_M.RenderModel();
 
 
 
