@@ -33,17 +33,30 @@
 #include "Material.h"
 const float toRadians = 3.14159265f / 180.0f;
 
+
 Window mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
 
 Camera camera;
+//Animacion
+bool puertaAbierta = false;  // Controla si la puerta está abierta o cerrada
+float alguloPuerta = 0.0f;  // Ángulo actual de la puerta
+float velocidadPuerta = 2.0f; // Velocidad de apertura/cierre
 
 //Texturas
 //Texture brickTexture;
 
 //Modelos
 Model Piso_M;
+//Puertas
+Model Rejas_M;
+Model PuertaN_1;
+Model PuertaN_2;
+Model PuertaR_1;
+Model PuertaR_2;
+Model PuertaV_1;
+Model PuertaV_2;
 Model MaquinaMoneda_M;
 Model Moneda_M;
 Model banca_M;
@@ -63,6 +76,17 @@ Model aguas;
 Model latas;
 Model vasos;
 Model tarro;
+//Puesto de tacos
+Model puesto_tacos;
+Model tabla;
+Model salsa_verde;
+Model salsa_roja;
+Model tacos2;
+Model comal;
+Model platos;
+Model servilletas;
+Model cuchillo;
+Model trompo;
 //Mesa de dados
 Model Base_M;
 Model Borde_M;
@@ -234,6 +258,21 @@ int main()
 	//Modelos 
 	Piso_M = Model();
 	Piso_M.LoadModel("Models/Piso_obj.obj");
+	//Puertas
+	Rejas_M = Model();
+	Rejas_M.LoadModel("Models/Puertas/rejas_arcos.obj");
+	PuertaN_1 = Model();
+	PuertaN_1.LoadModel("Models/Puertas/puerta1_n.obj");
+	PuertaN_2 = Model();
+	PuertaN_2.LoadModel("Models/Puertas/puerta2_n.obj");
+	PuertaR_1 = Model();
+	PuertaR_1.LoadModel("Models/Puertas/puerta1_r.obj");
+	PuertaR_2 = Model();
+	PuertaR_2.LoadModel("Models/Puertas/puerta2_r.obj");
+	PuertaV_1 = Model();
+	PuertaV_1.LoadModel("Models/Puertas/puerta1_v.obj");
+	PuertaV_2 = Model();
+	PuertaV_2.LoadModel("Models/Puertas/puerta2_v.obj");
 	MaquinaMoneda_M = Model();
 	MaquinaMoneda_M.LoadModel("Models/MaquinaMoneda_obj.obj");
 	Moneda_M = Model();
@@ -269,6 +308,27 @@ int main()
 	vasos.LoadModel("Models/P_bebidas/vaso.obj");
 	tarro = Model();
 	tarro.LoadModel("Models/P_bebidas/tarro.obj");
+	//Puesto de tacos
+	puesto_tacos = Model();
+	puesto_tacos.LoadModel("Models/P_tacos/tacos_p.obj");
+	tabla = Model();
+	tabla.LoadModel("Models/P_tacos/tabla.obj");
+	salsa_verde = Model();
+	salsa_verde.LoadModel("Models/P_tacos/salsa_v.obj");
+	salsa_roja = Model();
+	salsa_roja.LoadModel("Models/P_tacos/salsa_r.obj");
+	tacos2 = Model();
+	tacos2.LoadModel("Models/P_tacos/tacos2.obj");
+	comal = Model();
+	comal.LoadModel("Models/P_tacos/comal.obj");
+	platos = Model();
+	platos.LoadModel("Models/P_tacos/platos.obj");
+	servilletas = Model();
+	servilletas.LoadModel("Models/P_tacos/servilletas.obj");
+	cuchillo = Model();
+	cuchillo.LoadModel("Models/P_tacos/cuchillo.obj");
+	trompo = Model();
+	trompo.LoadModel("Models/P_tacos/trompo.obj");
 	//Mesa de dados
 	Base_M = Model();
 	Base_M.LoadModel("Models/Base_obj.obj");
@@ -430,6 +490,8 @@ int main()
 		glm::mat4 modelauxPizzas(1.0);
 		glm::mat4 modelauxDados(1.0);
 		glm::mat4 modelauxBoliche(1.0);
+		glm::mat4 modelauxPuertas(1.0);
+		glm::mat4 modelauxTacos(1.0);
 
 		//Piso de la Feria
 		model = glm::mat4(1.0);
@@ -438,6 +500,61 @@ int main()
 		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		Piso_M.RenderModel();
+		//Rejas
+		model = glm::mat4(1.0);
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Rejas_M.RenderModel();
+
+		//Puertas
+		puertaAbierta = mainWindow.getarticulacion1();
+		if (puertaAbierta == 1)
+		{
+			alguloPuerta += velocidadPuerta * deltaTime;
+			if (alguloPuerta > 90.0f)
+			{
+				alguloPuerta = 90.0f;
+			}
+		}
+		else
+		{
+			alguloPuerta -= velocidadPuerta * deltaTime;
+			if (alguloPuerta < 0.0f)
+			{
+				alguloPuerta = 0.0f;
+			}
+		}
+		modelauxPuertas = model;
+		model = glm::translate(model, glm::vec3(-10.0f, 8.49f, 50.842f));
+		model = glm::rotate(model, alguloPuerta * toRadians, glm::vec3(0.0f, -1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PuertaN_1.RenderModel();
+		model = modelauxPuertas;
+		model = glm::translate(model, glm::vec3(10.0f, 8.49f, 50.842f));
+		model = glm::rotate(model, alguloPuerta * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PuertaN_2.RenderModel();
+
+		model = modelauxPuertas;
+		model = glm::translate(model, glm::vec3(-30.161f, 7.5f, -42.403f));
+		model = glm::rotate(model, alguloPuerta * toRadians, glm::vec3(0.0f, -1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PuertaR_1.RenderModel();
+		model = modelauxPuertas;
+		model = glm::translate(model, glm::vec3(-44.141f, 7.5f, -27.561f));
+		model = glm::rotate(model, alguloPuerta * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PuertaR_2.RenderModel();
+
+		model = modelauxPuertas;
+		model = glm::translate(model, glm::vec3(42.612f, 13.861f, -28.45f));
+		model = glm::rotate(model, alguloPuerta * toRadians, glm::vec3(0.0f, -1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PuertaV_1.RenderModel();
+		model = modelauxPuertas;
+		model = glm::translate(model, glm::vec3(27.255f, 13.861f, -43.279f));
+		model = glm::rotate(model, alguloPuerta * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PuertaV_2.RenderModel();
 
 		//Máquinas para introducir moneda
 		//Máquina para lanzamiento de dados
@@ -763,9 +880,8 @@ int main()
 		//====== PUESTOS ======
 		//Puesto de bebidas
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(12.5f, 2.63f, 10.0f));
-		//model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		model = glm::translate(model, glm::vec3(12.5f, 3.25f, 10.0f));
+		model = glm::scale(model, glm::vec3(0.37f, 0.37f, 0.37f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		puesto_bebidas.RenderModel();
 		//Aguas
@@ -867,6 +983,46 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		PizzaHawaiana_M.RenderModel();
+
+		//Puesto de tacos
+		//Puesto
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-12.0f, 3.25f, -10.0f));
+		model = glm::scale(model, glm::vec3(0.37f, 0.37f, 0.37f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		puesto_tacos.RenderModel();
+		//Tacos
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tacos2.RenderModel();
+		//Comal
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		comal.RenderModel();
+		//Platos
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		platos.RenderModel();
+		//salsas
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		salsa_roja.RenderModel();
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		salsa_verde.RenderModel();
+		//tabla
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		tabla.RenderModel();
+		//Trompo
+		modelauxTacos = model;
+		model = glm::translate(model, glm::vec3(-6.805f, 1.893f, -1.72f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		trompo.RenderModel();
+		//Cuchillo
+		model = modelauxTacos;
+		model = glm::translate(model, glm::vec3(6.572f, -0.333f, -3.446f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		cuchillo.RenderModel();
+		//Servilletas
+		model = modelauxTacos;
+		model = glm::translate(model, glm::vec3(7.484f, 4.911f, 3.573f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		servilletas.RenderModel();
 
 
 

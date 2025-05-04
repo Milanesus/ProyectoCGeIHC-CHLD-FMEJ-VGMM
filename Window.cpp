@@ -125,11 +125,14 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	{
 		theWindow->rotaz += 10.0;
 	}
-	if (key == GLFW_KEY_F)
+	//Abrir y cerrar las puertas
+	if (key == GLFW_KEY_F && action == GLFW_PRESS)
 	{
-		theWindow->articulacion1 += 10.0;
+		if (theWindow->articulacion1 == 90.0f)
+			theWindow->articulacion1 = 0.0f;
+		else
+			theWindow->articulacion1 = 90.0f;
 	}
-
 
 	if (key == GLFW_KEY_D && action == GLFW_PRESS)
 	{
