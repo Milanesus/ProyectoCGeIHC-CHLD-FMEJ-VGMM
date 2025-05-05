@@ -94,6 +94,7 @@ Model Tablero_M;
 Model Dado_M;
 //Línea de boliche
 Model PistaBoliche_M;
+Model CanaletaBoliche_M;
 Model Bolo_M;
 Model BolaBoliche_M;
 //Puesto de pizzas
@@ -341,6 +342,8 @@ int main()
 	//Línea de boliche
 	PistaBoliche_M = Model();
 	PistaBoliche_M.LoadModel("Models/PistaBoliche_obj.obj");
+	CanaletaBoliche_M = Model();
+	CanaletaBoliche_M.LoadModel("Models/CanaletaBoliche_obj.obj");
 	Bolo_M = Model();
 	Bolo_M.LoadModel("Models/Bolo_obj.obj");
 	BolaBoliche_M = Model();
@@ -787,6 +790,22 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		PistaBoliche_M.RenderModel();
 
+		//Canaleta izqueirda de boliche
+		model = modelauxBoliche;
+		model = glm::translate(model, glm::vec3(-2.8f, 0.2f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		CanaletaBoliche_M.RenderModel();
+
+		//Canaleta derecha de boliche
+		model = modelauxBoliche;
+		model = glm::translate(model, glm::vec3(2.8f, 0.2f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		CanaletaBoliche_M.RenderModel();
+
 		//Bola de boliche
 		model = modelauxBoliche;
 		model = glm::translate(model, glm::vec3(0.0f, 1.0f, 8.0f));
@@ -983,6 +1002,27 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		PizzaHawaiana_M.RenderModel();
+
+		//Platos
+		model = modelauxPizzas;
+		model = glm::translate(model, glm::vec3(0.4f, 0.71f, 0.8f));
+		model = glm::scale(model, glm::vec3(0.37f, 0.37f, 0.37f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		platos.RenderModel();
+
+		model = modelauxPizzas;
+		model = glm::translate(model, glm::vec3(-8.95f, 0.71f, 0.8f));
+		model = glm::scale(model, glm::vec3(0.37f, 0.37f, 0.37f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		platos.RenderModel();
+
+		//Servileltas
+		model = modelauxPizzas;
+		model = glm::translate(model, glm::vec3(0.0f, -0.23f, 0.82f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(0.37f, 0.37f, 0.37f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		servilletas.RenderModel();
 
 		//Puesto de tacos
 		//Puesto
