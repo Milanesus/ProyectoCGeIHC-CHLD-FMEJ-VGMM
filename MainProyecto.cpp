@@ -97,6 +97,12 @@ Model PistaBoliche_M;
 Model CanaletaBoliche_M;
 Model Bolo_M;
 Model BolaBoliche_M;
+//Línea de boliche
+Model MesaTopo_M;
+Model LetreroTopo_M;
+Model HoyoTopo_M;
+Model MesaMazoTopo_M;
+Model MazoTopo_M;
 //Puesto de pizzas
 Model PuestoPizzas_M;
 Model PizzaLimon_M;
@@ -348,6 +354,17 @@ int main()
 	Bolo_M.LoadModel("Models/Bolo_obj.obj");
 	BolaBoliche_M = Model();
 	BolaBoliche_M.LoadModel("Models/BolaBoliche_obj.obj");
+	//Golpea al topo
+	MesaTopo_M = Model();
+	MesaTopo_M.LoadModel("Models/MesaTopo_obj.obj");
+	LetreroTopo_M = Model();
+	LetreroTopo_M.LoadModel("Models/LetreroTopo_obj.obj");
+	HoyoTopo_M = Model();
+	HoyoTopo_M.LoadModel("Models/HoyoTopo_obj.obj");
+	MesaMazoTopo_M = Model();
+	MesaMazoTopo_M.LoadModel("Models/MesaMazoTopo_obj.obj");
+	MazoTopo_M = Model();
+	MazoTopo_M.LoadModel("Models/MazoTopo_obj.obj");
 	//Puesto de Pizzas
 	PuestoPizzas_M = Model();
 	PuestoPizzas_M.LoadModel("Models/PuestoPizzas_obj.obj");
@@ -493,6 +510,7 @@ int main()
 		glm::mat4 modelauxPizzas(1.0);
 		glm::mat4 modelauxDados(1.0);
 		glm::mat4 modelauxBoliche(1.0);
+		glm::mat4 modelauxTopo(1.0);
 		glm::mat4 modelauxPuertas(1.0);
 		glm::mat4 modelauxTacos(1.0);
 
@@ -602,7 +620,7 @@ int main()
 
 		//Máquina para golpea al topo
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(25.5f, -0.03f, 32.0f));
+		model = glm::translate(model, glm::vec3(21.0f, -0.03f, 32.0f));
 		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -885,6 +903,105 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		Bolo_M.RenderModel();
 
+		//Golpea al topo
+		//Mesa de golpear al topo
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(25.0f, 1.4f, 32.0f));
+		modelauxTopo = model;
+		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		MesaTopo_M.RenderModel();
+
+		//Letrero golpea al topo
+		model = modelauxTopo;
+		model = glm::translate(model, glm::vec3(0.0f, 1.3f, -1.75f));
+		model = glm::scale(model, glm::vec3(0.3f, 0.37f, 0.3f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		LetreroTopo_M.RenderModel();
+
+		//Hoyos
+		model = modelauxTopo;
+		model = glm::translate(model, glm::vec3(-1.35f, 1.5f, -1.0f));
+		model = glm::scale(model, glm::vec3(0.25f, 0.25f, 0.25f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		HoyoTopo_M.RenderModel();
+
+		model = modelauxTopo;
+		model = glm::translate(model, glm::vec3(0.0f, 1.5f, -1.0f));
+		model = glm::scale(model, glm::vec3(0.25f, 0.25f, 0.25f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		HoyoTopo_M.RenderModel();
+
+		model = modelauxTopo;
+		model = glm::translate(model, glm::vec3(1.35f, 1.5f, -1.0f));
+		model = glm::scale(model, glm::vec3(0.25f, 0.25f, 0.25f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		HoyoTopo_M.RenderModel();
+
+		model = modelauxTopo;
+		model = glm::translate(model, glm::vec3(-1.35f, 1.5f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.25f, 0.25f, 0.25f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		HoyoTopo_M.RenderModel();
+		
+		model = modelauxTopo;
+		model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.25f, 0.25f, 0.25f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		HoyoTopo_M.RenderModel();
+
+		model = modelauxTopo;
+		model = glm::translate(model, glm::vec3(1.35f, 1.5f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.25f, 0.25f, 0.25f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		HoyoTopo_M.RenderModel();
+
+		model = modelauxTopo;
+		model = glm::translate(model, glm::vec3(-1.35f, 1.5f, 1.0f));
+		model = glm::scale(model, glm::vec3(0.25f, 0.25f, 0.25f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		HoyoTopo_M.RenderModel();
+
+		model = modelauxTopo;
+		model = glm::translate(model, glm::vec3(0.0f, 1.5f, 1.0f));
+		model = glm::scale(model, glm::vec3(0.25f, 0.25f, 0.25f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		HoyoTopo_M.RenderModel();
+
+		model = modelauxTopo;
+		model = glm::translate(model, glm::vec3(1.35f, 1.5f, 1.0f));
+		model = glm::scale(model, glm::vec3(0.25f, 0.25f, 0.25f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		HoyoTopo_M.RenderModel();
+
+		//Mesa para mazo de golpea al topo
+		model = modelauxTopo;
+		model = glm::translate(model, glm::vec3(2.93f, 1.43f, 0.0f));
+		modelauxTopo = model;
+		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		MesaMazoTopo_M.RenderModel();
+
+		//Mazo de golpea al topo
+		model = modelauxTopo;
+		model = glm::translate(model, glm::vec3(0.0f, 0.24f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		MazoTopo_M.RenderModel();
+
 
 		/*
 		//Moneda
@@ -1016,7 +1133,7 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		platos.RenderModel();
 
-		//Servileltas
+		//Servilletas
 		model = modelauxPizzas;
 		model = glm::translate(model, glm::vec3(0.0f, -0.23f, 0.82f));
 		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
