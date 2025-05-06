@@ -134,6 +134,14 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 			theWindow->articulacion1 = 90.0f;
 	}
 
+	if (key == GLFW_KEY_P && action == GLFW_PRESS)
+	{
+		if (theWindow->articulacion2 == 0.0f)
+			theWindow->articulacion2 = 1.0f;
+		else
+			theWindow->articulacion2 = 0.0f;
+	}
+
 	if (key == GLFW_KEY_D && action == GLFW_PRESS)
 	{
 		const char* key_name = glfwGetKeyName(GLFW_KEY_D, 0);

@@ -121,8 +121,9 @@ Skybox skybox;
 Material Material_brillante;
 Material Material_opaco;
 
+bool bandera = false;
 
-//Sphere cabeza = Sphere(0.5, 20, 20);
+
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
 static double limitFPS = 1.0 / 60.0;
@@ -353,8 +354,6 @@ int main()
 	spotLightCount++;
 
 
-	//se crean mas luces puntuales y spotlight 
-
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0;
 	GLuint uniformColor = 0;
@@ -401,7 +400,12 @@ int main()
 		shaderList[0].SetDirectionalLight(&mainLight);
 
 		//Pasar luces al shader
-		shaderList[0].SetPointLights(pointLights, pointLightCount);
+		bandera = mainWindow.getarticulacion2();
+		if (bandera == 1.0f)
+			shaderList[0].SetPointLights(pointLights, pointLightCount);
+		else
+			shaderList[0].SetPointLights(pointLights, pointLightCount - 3);
+
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
 
 
