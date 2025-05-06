@@ -6,6 +6,8 @@
 #include <cmath>
 #include <vector>
 #include <math.h>
+#include <cstdlib>
+#include <ctime>
 
 #include <glew.h>
 #include <glfw3.h>
@@ -97,12 +99,15 @@ Model PistaBoliche_M;
 Model CanaletaBoliche_M;
 Model Bolo_M;
 Model BolaBoliche_M;
-//Línea de boliche
+//Golpea al topo
 Model MesaTopo_M;
 Model LetreroTopo_M;
 Model HoyoTopo_M;
 Model MesaMazoTopo_M;
 Model MazoTopo_M;
+Model TopoDGP_M;
+Model TopoHDA_M;
+Model TopoBluey_M;
 //Puesto de pizzas
 Model PuestoPizzas_M;
 Model PizzaLimon_M;
@@ -135,110 +140,6 @@ static const char* vShader = "shaders/shader_light.vert";
 static const char* fShader = "shaders/shader_light.frag";
 
 
-//función de calculo de normales por promedio de vértices 
-void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat* vertices, unsigned int verticeCount,
-	unsigned int vLength, unsigned int normalOffset)
-{
-	for (size_t i = 0; i < indiceCount; i += 3)
-	{
-		unsigned int in0 = indices[i] * vLength;
-		unsigned int in1 = indices[i + 1] * vLength;
-		unsigned int in2 = indices[i + 2] * vLength;
-		glm::vec3 v1(vertices[in1] - vertices[in0], vertices[in1 + 1] - vertices[in0 + 1], vertices[in1 + 2] - vertices[in0 + 2]);
-		glm::vec3 v2(vertices[in2] - vertices[in0], vertices[in2 + 1] - vertices[in0 + 1], vertices[in2 + 2] - vertices[in0 + 2]);
-		glm::vec3 normal = glm::cross(v1, v2);
-		normal = glm::normalize(normal);
-
-		in0 += normalOffset; in1 += normalOffset; in2 += normalOffset;
-		vertices[in0] += normal.x; vertices[in0 + 1] += normal.y; vertices[in0 + 2] += normal.z;
-		vertices[in1] += normal.x; vertices[in1 + 1] += normal.y; vertices[in1 + 2] += normal.z;
-		vertices[in2] += normal.x; vertices[in2 + 1] += normal.y; vertices[in2 + 2] += normal.z;
-	}
-
-	for (size_t i = 0; i < verticeCount / vLength; i++)
-	{
-		unsigned int nOffset = i * vLength + normalOffset;
-		glm::vec3 vec(vertices[nOffset], vertices[nOffset + 1], vertices[nOffset + 2]);
-		vec = glm::normalize(vec);
-		vertices[nOffset] = vec.x; vertices[nOffset + 1] = vec.y; vertices[nOffset + 2] = vec.z;
-	}
-}
-
-
-void CreateObjects()
-{
-	unsigned int indices[] = {
-		0, 3, 1,
-		1, 3, 2,
-		2, 3, 0,
-		0, 1, 2
-	};
-
-	GLfloat vertices[] = {
-		//	x      y      z			u	  v			nx	  ny    nz
-			-1.0f, -1.0f, -0.6f,	0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-			0.0f, -1.0f, 1.0f,		0.5f, 0.0f,		0.0f, 0.0f, 0.0f,
-			1.0f, -1.0f, -0.6f,		1.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f,		0.5f, 1.0f,		0.0f, 0.0f, 0.0f
-	};
-
-	unsigned int floorIndices[] = {
-		0, 2, 1,
-		1, 2, 3
-	};
-
-	GLfloat floorVertices[] = {
-		-10.0f, 0.0f, -10.0f,	0.0f, 0.0f,		0.0f, -1.0f, 0.0f,
-		10.0f, 0.0f, -10.0f,	10.0f, 0.0f,	0.0f, -1.0f, 0.0f,
-		-10.0f, 0.0f, 10.0f,	0.0f, 10.0f,	0.0f, -1.0f, 0.0f,
-		10.0f, 0.0f, 10.0f,		10.0f, 10.0f,	0.0f, -1.0f, 0.0f
-	};
-
-	unsigned int vegetacionIndices[] = {
-	   0, 1, 2,
-	   0, 2, 3,
-	   4,5,6,
-	   4,6,7
-	};
-
-	GLfloat vegetacionVertices[] = {
-		-0.5f, -0.5f, 0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		0.5f, -0.5f, 0.0f,		1.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		0.5f, 0.5f, 0.0f,		1.0f, 1.0f,		0.0f, 0.0f, 0.0f,
-		-0.5f, 0.5f, 0.0f,		0.0f, 1.0f,		0.0f, 0.0f, 0.0f,
-
-		0.0f, -0.5f, -0.5f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		0.0f, -0.5f, 0.5f,		1.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		0.0f, 0.5f, 0.5f,		1.0f, 1.0f,		0.0f, 0.0f, 0.0f,
-		0.0f, 0.5f, -0.5f,		0.0f, 1.0f,		0.0f, 0.0f, 0.0f,
-
-
-	};
-
-
-	Mesh* obj1 = new Mesh();
-	obj1->CreateMesh(vertices, indices, 32, 12);
-	meshList.push_back(obj1);//[0]
-
-	Mesh* obj2 = new Mesh();
-	obj2->CreateMesh(vertices, indices, 32, 12);
-	meshList.push_back(obj2);//[1]
-
-	Mesh* obj3 = new Mesh();
-	obj3->CreateMesh(floorVertices, floorIndices, 32, 6);
-	meshList.push_back(obj3);//[2]
-
-	Mesh* obj4 = new Mesh();
-	obj4->CreateMesh(vegetacionVertices, vegetacionIndices, 64, 12);
-	meshList.push_back(obj4);//[3]
-
-	calcAverageNormals(indices, 12, vertices, 32, 8, 5);
-
-	calcAverageNormals(vegetacionIndices, 12, vegetacionVertices, 64, 8, 5);
-
-}
-
-
 void CreateShaders()
 {
 	Shader* shader1 = new Shader();
@@ -247,21 +148,15 @@ void CreateShaders()
 }
 
 
-
 int main()
 {
-	mainWindow = Window(1366, 768); // 1280, 1024 or 1024, 768
+	mainWindow = Window(1600, 900);
 	mainWindow.Initialise();
 
-	CreateObjects();
 	CreateShaders();
 
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.3f, 0.5f);
 
-	/*
-	brickTexture = Texture("Textures/brick.png");
-	brickTexture.LoadTextureA();
-	*/
 	//Modelos 
 	Piso_M = Model();
 	Piso_M.LoadModel("Models/Piso_obj.obj");
@@ -365,6 +260,12 @@ int main()
 	MesaMazoTopo_M.LoadModel("Models/MesaMazoTopo_obj.obj");
 	MazoTopo_M = Model();
 	MazoTopo_M.LoadModel("Models/MazoTopo_obj.obj");
+	TopoDGP_M = Model();
+	TopoDGP_M.LoadModel("Models/TopoDonGatoysuPandilla_obj.obj");
+	TopoHDA_M = Model();
+	TopoHDA_M.LoadModel("Models/TopoHoradeAventura_obj.obj");
+	TopoBluey_M = Model();
+	TopoBluey_M.LoadModel("Models/TopoBluey_obj.obj");
 	//Puesto de Pizzas
 	PuestoPizzas_M = Model();
 	PuestoPizzas_M.LoadModel("Models/PuestoPizzas_obj.obj");
@@ -984,6 +885,134 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		HoyoTopo_M.RenderModel();
+
+		//Aleatorizar topos
+		double tiempotopos = 0.0;
+		int numeroAleatorio = 1;
+
+		srand(static_cast<unsigned int>(time(0)));
+		double currentTime = glfwGetTime();
+		if (currentTime - tiempotopos >= 0.9) {
+			numeroAleatorio = (rand() % 3) + 1;
+			tiempotopos = currentTime;
+		}
+
+		//Topo 1
+		model = modelauxTopo;
+		if (numeroAleatorio == 2) {
+			model = glm::translate(model, glm::vec3(-1.35f, 1.65f, -1.0f));
+		}
+		else {
+			model = glm::translate(model, glm::vec3(-1.35f, -1.65f, -1.0f));
+		}
+		model = glm::scale(model, glm::vec3(0.08f, 0.08f, 0.08f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		TopoHDA_M.RenderModel();
+
+		//Topo 2
+		model = modelauxTopo;
+		if (numeroAleatorio == 1) {
+			model = glm::translate(model, glm::vec3(0.0f, 1.65f, -1.0f));
+		}
+		else {
+			model = glm::translate(model, glm::vec3(0.0f, -1.65f, -1.0f));
+		}
+		model = glm::scale(model, glm::vec3(0.08f, 0.08f, 0.08f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		TopoBluey_M.RenderModel();
+
+		//Topo 3
+		model = modelauxTopo;
+		if (numeroAleatorio == 3) {
+			model = glm::translate(model, glm::vec3(1.35f, 1.65f, -1.0f));
+		}
+		else {
+			model = glm::translate(model, glm::vec3(1.35f, -1.65f, -1.0f));
+		}
+		model = glm::scale(model, glm::vec3(0.08f, 0.08f, 0.08f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		TopoDGP_M.RenderModel();
+
+		//Topo 4
+		model = modelauxTopo;
+		if (numeroAleatorio == 3) {
+			model = glm::translate(model, glm::vec3(-1.35f, 1.65f, 0.0f));
+		}
+		else {
+			model = glm::translate(model, glm::vec3(-1.35f, -1.65f, 0.0f));
+		}
+		model = glm::scale(model, glm::vec3(0.08f, 0.08f, 0.08f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		TopoBluey_M.RenderModel();
+
+		//Topo 5
+		model = modelauxTopo;
+		if (numeroAleatorio == 2) {
+			model = glm::translate(model, glm::vec3(0.0f, 1.65f, 0.0f));
+		}
+		else {
+			model = glm::translate(model, glm::vec3(0.0f, -1.65f, 0.0f));
+		}
+		model = glm::scale(model, glm::vec3(0.08f, 0.08f, 0.08f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		TopoDGP_M.RenderModel();
+
+		//Topo 6
+		model = modelauxTopo;
+		if (numeroAleatorio == 1) {
+			model = glm::translate(model, glm::vec3(1.35f, 1.65f, 0.0f));
+		}
+		else {
+			model = glm::translate(model, glm::vec3(1.35f, -1.65f, 0.0f));
+		}
+		model = glm::scale(model, glm::vec3(0.08f, 0.08f, 0.08f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		TopoHDA_M.RenderModel();
+
+		//Topo 7
+		model = modelauxTopo;
+		if (numeroAleatorio == 1) {
+			model = glm::translate(model, glm::vec3(-1.35f, 1.65f, 1.0f));
+		}
+		else {
+			model = glm::translate(model, glm::vec3(-1.35f, -1.65f, 1.0f));
+		}
+		model = glm::scale(model, glm::vec3(0.08f, 0.08f, 0.08f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		TopoDGP_M.RenderModel();
+
+		//Topo 8
+		model = modelauxTopo;
+		if (numeroAleatorio == 3) {
+			model = glm::translate(model, glm::vec3(0.0f, 1.65f, 1.0f));
+		}
+		else {
+			model = glm::translate(model, glm::vec3(0.0f, -1.65f, 1.0f));
+		}
+		model = glm::scale(model, glm::vec3(0.08f, 0.08f, 0.08f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		TopoHDA_M.RenderModel();
+
+		//Topo 9
+		model = modelauxTopo;
+		if (numeroAleatorio == 2) {
+			model = glm::translate(model, glm::vec3(1.35f, 1.65f, 1.0f));
+		}
+		else {
+			model = glm::translate(model, glm::vec3(1.35f, -1.65f, 1.0f));
+		}
+		model = glm::scale(model, glm::vec3(0.08f, 0.08f, 0.08f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		TopoBluey_M.RenderModel();
 
 		//Mesa para mazo de golpea al topo
 		model = modelauxTopo;
