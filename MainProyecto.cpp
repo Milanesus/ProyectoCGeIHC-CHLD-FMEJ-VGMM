@@ -114,6 +114,13 @@ Model PizzaLimon_M;
 Model PizzaPeperoni_M;
 Model PizzaQueso_M;
 Model PizzaHawaiana_M;
+//BMO
+Model CuerpoBMO_M;
+Model BotonesBMO_M;
+Model LetrasBMO_M;
+Model PiernasBMO_M;
+Model BrazoIzquierdoBMO_M;
+Model BrazoDerechoBMO_M;
 
 Skybox skybox;
 
@@ -278,6 +285,19 @@ int main()
 	PizzaQueso_M.LoadModel("Models/PizzaQueso_obj.obj");
 	PizzaHawaiana_M = Model();
 	PizzaHawaiana_M.LoadModel("Models/PizzaHawaiana_obj.obj");
+	//BMO
+	CuerpoBMO_M = Model();
+	CuerpoBMO_M.LoadModel("Models/CuerpoBMO_obj.obj");
+	BotonesBMO_M = Model();
+	BotonesBMO_M.LoadModel("Models/BotonesBMO_obj.obj");
+	LetrasBMO_M = Model();
+	LetrasBMO_M.LoadModel("Models/LetrasBMO_obj.obj");
+	PiernasBMO_M = Model();
+	PiernasBMO_M.LoadModel("Models/PiernasBMO_obj.obj");
+	BrazoIzquierdoBMO_M = Model();
+	BrazoIzquierdoBMO_M.LoadModel("Models/BrazoIzquierdoBMO_obj.obj");
+	BrazoDerechoBMO_M = Model();
+	BrazoDerechoBMO_M.LoadModel("Models/BrazoDerechoBMO_obj.obj");
 
 
 	std::vector<std::string> skyboxFaces;
@@ -418,6 +438,7 @@ int main()
 		glm::mat4 modelauxTopo(1.0);
 		glm::mat4 modelauxPuertas(1.0);
 		glm::mat4 modelauxTacos(1.0);
+		glm::mat4 modelauxBMO(1.0);
 
 		//Piso de la Feria
 		model = glm::mat4(1.0);
@@ -1214,7 +1235,60 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		servilletas.RenderModel();
 
+		//====== PERSONAJES ======
 
+		//Muffin (Bluey)
+
+
+		//Cucho (Don Gato y su Pandilla
+
+
+		//Rey Helado (Hora de Aventura)
+
+
+		//BMO (Hora de aventura)
+		//Cuerpo
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-30.0f, 2.0f, -32.0f));
+		modelauxBMO = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		CuerpoBMO_M.RenderModel();
+
+		//Botones
+		model = modelauxBMO;
+		model = glm::translate(model, glm::vec3(0.0f, -0.27f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		BotonesBMO_M.RenderModel();
+
+		//Letras
+		model = modelauxBMO;
+		model = glm::translate(model, glm::vec3(0.0f, -0.2f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		LetrasBMO_M.RenderModel();
+
+		//Piernas
+		model = modelauxBMO;
+		model = glm::translate(model, glm::vec3(0.0f, -1.1f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		PiernasBMO_M.RenderModel();
+
+		//Brazo izquierdo
+		model = modelauxBMO;
+		model = glm::translate(model, glm::vec3(0.6f, -0.15f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		BrazoIzquierdoBMO_M.RenderModel();
+
+		//Brazo derecho
+		model = modelauxBMO;
+		model = glm::translate(model, glm::vec3(-0.6f, -0.15f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		BrazoDerechoBMO_M.RenderModel();
 
 		//blending: transparencia o traslucidez
 		/*
