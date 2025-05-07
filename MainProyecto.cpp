@@ -121,6 +121,12 @@ Model LetrasBMO_M;
 Model PiernasBMO_M;
 Model BrazoIzquierdoBMO_M;
 Model BrazoDerechoBMO_M;
+//Gunter
+Model CuerpoGunter_M;
+Model OjosGunter_M;
+Model PicoGunter_M;
+Model AletasGunter_M;
+Model PatasGunter_M;
 //Limonagrio
 Model CuerpoLimonagrio_M;
 Model PiernasLimonagrio_M;
@@ -304,7 +310,17 @@ int main()
 	BrazoIzquierdoBMO_M.LoadModel("Models/BMO/BrazoIzquierdoBMO_obj.obj");
 	BrazoDerechoBMO_M = Model();
 	BrazoDerechoBMO_M.LoadModel("Models/BMO/BrazoDerechoBMO_obj.obj");
-
+	//Gunter
+	CuerpoGunter_M = Model();
+	CuerpoGunter_M.LoadModel("Models/Gunter/CuerpoGunter_obj.obj");
+	OjosGunter_M = Model();
+	OjosGunter_M.LoadModel("Models/Gunter/OjosGunter_obj.obj");
+	PicoGunter_M = Model();
+	PicoGunter_M.LoadModel("Models/Gunter/PicoGunter_obj.obj");
+	AletasGunter_M = Model();
+	AletasGunter_M.LoadModel("Models/Gunter/AletasGunter_obj.obj");
+	PatasGunter_M = Model();
+	PatasGunter_M.LoadModel("Models/Gunter/PatasGunter_obj.obj");
 	//Limonagrio
 	CuerpoLimonagrio_M = Model();
 	CuerpoLimonagrio_M.LoadModel("Models/Limonagrio/CuerpoLimonagrio_obj.obj");
@@ -457,6 +473,7 @@ int main()
 		glm::mat4 modelauxPuertas(1.0);
 		glm::mat4 modelauxTacos(1.0);
 		glm::mat4 modelauxBMO(1.0);
+		glm::mat4 modelauxGunter(1.0);
 		glm::mat4 modelauxLimonagrio(1.0);
 
 		//Piso de la Feria
@@ -1303,7 +1320,7 @@ int main()
 		//BMO (Hora de aventura)
 		//Cuerpo
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-30.0f, 2.0f, -32.0f));
+		model = glm::translate(model, glm::vec3(-30.0f, 1.5f, -32.0f));
 		modelauxBMO = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
@@ -1343,6 +1360,43 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		BrazoDerechoBMO_M.RenderModel();
+
+		//Gunter (Hora de aventura)
+		//Cuerpo
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(30.0f, 0.73f, -24.0f));
+		modelauxGunter = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		CuerpoGunter_M.RenderModel();
+
+		//Ojos
+		model = modelauxGunter;
+		model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.29f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		OjosGunter_M.RenderModel();
+
+		//Pico
+		model = modelauxGunter;
+		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.45f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		PicoGunter_M.RenderModel();
+		
+		//Aletas
+		model = modelauxGunter;
+		model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.2f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		AletasGunter_M.RenderModel();
+
+		//Patas
+		model = modelauxGunter;
+		model = glm::translate(model, glm::vec3(0.0f, -0.5f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		PatasGunter_M.RenderModel();
 
 		//Limonagrio (Hora de aventura)
 		//Cuerpo
