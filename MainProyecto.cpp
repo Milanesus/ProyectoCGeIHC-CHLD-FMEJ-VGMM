@@ -54,6 +54,7 @@ static float anguloRotacion = 0.0f;
 
 //Modelos
 Model Piso_M;
+Model Laser_M;
 //Puertas
 Model Rejas_M;
 Model PuertaN_1;
@@ -281,6 +282,8 @@ int main()
 	//Modelos 
 	Piso_M = Model();
 	Piso_M.LoadModel("Models/Piso_obj.obj");
+	Laser_M = Model();
+	Laser_M.LoadModel("Models/Laser_obj.obj");
 	//Puertas
 	Rejas_M = Model();
 	Rejas_M.LoadModel("Models/Puertas/rejas_arcos.obj");
@@ -696,6 +699,34 @@ int main()
 		5.0f);
 	spotLightCount++;
 
+	//Luz morada
+	spotLights[1] = SpotLight(1.0f, 0.0f, 1.0f,
+		//Intensidad ambiental y tonalidad
+		2.0f, 1.0f,
+		//Posición x, y, z
+		29.4f, 1.5f, 8.0f,
+		//Dirección de la luz
+		-1.0f, 0.0f, 1.0f,
+		//No poner en 0.0f, 0.0f, 0.0f en la linea de abajo
+		1.0f, 0.05f, 0.0f,
+		//Ángulo de apertura
+		8.0f);
+	spotLightCount++;
+
+	//Luz amarilla
+	spotLights[2] = SpotLight(1.0f, 1.0f, 0.0f,
+		//Intensidad ambiental y tonalidad
+		2.0f, 1.0f,
+		//Posición x, y, z
+		-29.4f, 1.5f, 8.0f,
+		//Dirección de la luz
+		1.0f, 0.0f, 1.0f,
+		//No poner en 0.0f, 0.0f, 0.0f en la linea de abajo
+		1.0f, 0.05f, 0.0f,
+		//Ángulo de apertura
+		8.0f);
+	spotLightCount++;
+
 
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0;
@@ -767,13 +798,18 @@ int main()
 		shaderList[0].SetDirectionalLight(&mainLight);
 
 		//Pasar luces al shader
-		bandera = mainWindow.getarticulacion2();
-		if (bandera == 1.0f)
-			shaderList[0].SetPointLights(pointLights, pointLightCount);
-		else
+		if (tiempoCiclo < 60.0)
 			shaderList[0].SetPointLights(pointLights, pointLightCount - 3);
+		else
+			shaderList[0].SetPointLights(pointLights, pointLightCount);
 
-		shaderList[0].SetSpotLights(spotLights, spotLightCount);
+		bandera = mainWindow.getarticulacion2();
+		if (mainWindow.getarticulacion2() == 1.0f) {
+			shaderList[0].SetSpotLights(spotLights, spotLightCount);
+		}
+		else {
+			shaderList[0].SetSpotLights(spotLights, spotLightCount - 2);
+		}
 
 
 		glm::mat4 model(1.0);
@@ -799,9 +835,6 @@ int main()
 		glm::mat4 modelauxMuffin(1.0);
 		glm::mat4 modelauxMuffin2(1.0);
 
-
-
-
 		//Piso de la Feria
 		model = glm::mat4(1.0);
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -809,6 +842,24 @@ int main()
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Piso_M.RenderModel();
+
+		//Laser 1
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(30.0f, 1.5f, 8.0f));
+		model = glm::rotate(model, -60 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Laser_M.RenderModel();
+
+		//Laser 2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-30.0f, 1.5f, 8.0f));
+		model = glm::rotate(model, 60 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Laser_M.RenderModel();
 
 		//Rejas
 		model = glm::mat4(1.0);
