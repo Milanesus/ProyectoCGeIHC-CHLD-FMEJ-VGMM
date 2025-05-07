@@ -117,6 +117,16 @@ Model PizzaLimon_M;
 Model PizzaPeperoni_M;
 Model PizzaQueso_M;
 Model PizzaHawaiana_M;
+//Hora de Aventura
+//Rey Helado
+Model CoronaReyHelado_M;
+Model CuerpoReyHelado_M;
+Model BrazosReyHelado_M;
+Model ManoDerechaReyHelado_M;
+Model ManoIzquierdaReyHelado_M;
+Model BarbayPeloReyHelado_M;
+Model CabezaReyHelado_M;
+Model BocaReyHelado_M;
 //BMO
 Model CuerpoBMO_M;
 Model BotonesBMO_M;
@@ -327,6 +337,23 @@ int main()
 	PizzaQueso_M.LoadModel("Models/PizzaQueso_obj.obj");
 	PizzaHawaiana_M = Model();
 	PizzaHawaiana_M.LoadModel("Models/PizzaHawaiana_obj.obj");
+	//Rey Helado
+	CuerpoReyHelado_M = Model();
+	CuerpoReyHelado_M.LoadModel("Models/ReyHelado/CuerpoReyHelado_obj.obj");
+	CoronaReyHelado_M = Model();
+	CoronaReyHelado_M.LoadModel("Models/ReyHelado/CoronaReyHelado_obj.obj");
+	BrazosReyHelado_M = Model();
+	BrazosReyHelado_M.LoadModel("Models/ReyHelado/BrazosReyHelado_obj.obj");
+	ManoDerechaReyHelado_M = Model();
+	ManoDerechaReyHelado_M.LoadModel("Models/ReyHelado/ManoDerechaReyHelado_obj.obj");
+	ManoIzquierdaReyHelado_M = Model();
+	ManoIzquierdaReyHelado_M.LoadModel("Models/ReyHelado/ManoIzquierdaReyHelado_obj.obj");
+	BarbayPeloReyHelado_M = Model();
+	BarbayPeloReyHelado_M.LoadModel("Models/ReyHelado/BarbayPeloReyHelado_obj.obj");
+	CabezaReyHelado_M = Model();
+	CabezaReyHelado_M.LoadModel("Models/ReyHelado/CabezaReyHelado_obj.obj");
+	BocaReyHelado_M = Model();
+	BocaReyHelado_M.LoadModel("Models/ReyHelado/BocaReyHelado_obj.obj");
 	//BMO
 	CuerpoBMO_M = Model();
 	CuerpoBMO_M.LoadModel("Models/BMO/CuerpoBMO_obj.obj");
@@ -553,6 +580,8 @@ int main()
 		glm::mat4 modelauxTopo(1.0);
 		glm::mat4 modelauxPuertas(1.0);
 		glm::mat4 modelauxTacos(1.0);
+		glm::mat4 modelauxReyHelado(1.0);
+		glm::mat4 modelauxReyHelado2(1.0);
 		glm::mat4 modelauxBMO(1.0);
 		glm::mat4 modelauxGunter(1.0);
 		glm::mat4 modelauxLimonagrio(1.0);
@@ -1550,7 +1579,77 @@ int main()
 
 
 		//Rey Helado (Hora de Aventura)
+		//Cuerpo
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(17.0f, 2.4f, 32.0f));
+		modelauxReyHelado = model;
+		modelauxReyHelado2 = model;
+		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		CuerpoReyHelado_M.RenderModel();
 
+		//Brazos
+		model = modelauxReyHelado;
+		model = glm::translate(model, glm::vec3(0.0f, 1.25f, 0.0f));
+		model = glm::rotate(model, -30 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, sin(glm::radians(angulovaria)), glm::vec3(1.0f, 0.0f, 0.0f));
+		modelauxReyHelado = model;
+		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		BrazosReyHelado_M.RenderModel();
+
+		//Mano derecha
+		model = modelauxReyHelado;
+		model = glm::translate(model, glm::vec3(-1.55f, -2.1f, 0.95f));
+		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		ManoDerechaReyHelado_M.RenderModel();
+
+		//Mano izquierda
+		model = modelauxReyHelado;
+		model = glm::translate(model, glm::vec3(1.55f, -2.1f, 0.95f));
+		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		ManoIzquierdaReyHelado_M.RenderModel();
+
+		//Cabeza
+		model = modelauxReyHelado2;
+		model = glm::translate(model, glm::vec3(0.0f, 2.4f, 0.9f));
+		modelauxReyHelado = model;
+		modelauxReyHelado2 = model;
+		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		CabezaReyHelado_M.RenderModel();
+
+		//Barba y pelo
+		model = modelauxReyHelado2;
+		model = glm::translate(model, glm::vec3(0.0f, -0.7f, -0.38f));
+		modelauxReyHelado2 = model;
+		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		BarbayPeloReyHelado_M.RenderModel();
+
+		//Boca
+		model = modelauxReyHelado2;
+		model = glm::translate(model, glm::vec3(0.0f, 0.4f, 0.75f));
+		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		BocaReyHelado_M.RenderModel();
+
+		//Corona
+		model = modelauxReyHelado;
+		model = glm::translate(model, glm::vec3(0.0f, 0.55f, -0.65f));
+		model = glm::scale(model, glm::vec3(1.1f, 1.1f, 1.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		CoronaReyHelado_M.RenderModel();
 
 		//BMO (Hora de aventura)
 		//Cuerpo
