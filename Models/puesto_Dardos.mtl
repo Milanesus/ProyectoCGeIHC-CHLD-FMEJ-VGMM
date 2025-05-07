@@ -12,5 +12,5 @@ newmtl Material__297
 	Kd 0.5880 0.5880 0.5880
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka C:\Users\Lap\OneDrive - UNIVERSIDAD NACIONAL AUTÓNOMA DE MÉXICO\Documents\Proyecto CGIHC\Textures\puestoDardos.jpg
-	map_Kd C:\Users\Lap\OneDrive - UNIVERSIDAD NACIONAL AUTÓNOMA DE MÉXICO\Documents\Proyecto CGIHC\Textures\puestoDardos.jpg
+	map_Ka puestoDardos.jpg
+	map_Kd puestoDardos.jpg
