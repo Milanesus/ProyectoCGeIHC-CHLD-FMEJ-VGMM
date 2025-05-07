@@ -27,7 +27,7 @@
 #include"Model.h"
 #include "Skybox.h"
 
-//para iluminaciÛn
+//para iluminaci√≥n
 #include "CommonValues.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
@@ -42,8 +42,8 @@ std::vector<Shader> shaderList;
 
 Camera camera;
 //Animacion
-bool puertaAbierta = false;  // Controla si la puerta est· abierta o cerrada
-float anguloPuerta = 0.0f;  // ¡ngulo actual de la puerta
+bool puertaAbierta = false;  // Controla si la puerta est√° abierta o cerrada
+float anguloPuerta = 0.0f;  // √Ångulo actual de la puerta
 float velocidadPuerta = 2.0f; // Velocidad de apertura/cierre
 float angulovaria = 0.0f;
 static float anguloRotacion = 0.0f;
@@ -97,7 +97,7 @@ Model Base_M;
 Model Borde_M;
 Model Tablero_M;
 Model Dado_M;
-//LÌnea de boliche
+//L√≠nea de boliche
 Model PistaBoliche_M;
 Model CanaletaBoliche_M;
 Model Bolo_M;
@@ -117,6 +117,23 @@ Model PizzaLimon_M;
 Model PizzaPeperoni_M;
 Model PizzaQueso_M;
 Model PizzaHawaiana_M;
+//Puesto de hamburguesas
+Model hamburguesas_Stripe;
+//Jaula de bateo
+Model jaulabateo;
+Model pelota_jaulabateo;
+Model bate_jaulabateo;
+Model alfombra_jaulabateo;
+Model lanzapelotas_jaulabateo;
+//Dardos
+Model puesto_Dardos;
+Model dardo_Dardos;
+Model cohetes_Dardos;
+Model conejos_Dardos;
+Model osos_Dardos;
+Model gam_Dardos;
+Model gaz_Dardos;
+Model gro_Dardos;
 //Hora de Aventura
 //Rey Helado
 Model CoronaReyHelado_M;
@@ -172,7 +189,50 @@ Model PataI_B;
 Model PataD_B;
 Model BrazoI_B;
 Model BrazoD_B;
-
+//Bluey
+// Bingo
+Model cuerpo_Bingo;
+Model brazouno_Bingo;
+Model brazodos_Bingo;
+Model patauno_Bingo;
+Model patados_Bingo;
+Model cola_Bingo;
+//Bandit
+Model cuerpo_Bandit;
+Model brazouno_Bandit;
+Model brazodos_Bandit;
+Model patauno_Bandit;
+Model patados_Bandit;
+Model cola_Bandit;
+//Stripe
+Model cuerpo_Stripe;
+Model brazouno_Stripe;
+Model brazodos_Stripe;
+Model patauno_Stripe;
+Model patados_Stripe;
+Model cola_Stripe;
+//Muffin
+Model cuerpo_Muffin;
+Model ojouno_Muffin;
+Model ojodos_Muffin;
+Model cejauno_Muffin;
+Model cejados_Muffin;
+Model orejauno_Muffin;
+Model orejados_Muffin;
+Model hocico_Muffin;
+Model cola_Muffin;
+Model patauno_Muffin;
+Model patados_Muffin;
+Model brazouno_Muffin;
+Model dedouno_Muffin;
+Model dedodos_Muffin;
+Model dedotres_Muffin;
+Model dedocuatro_Muffin;
+Model brazodos_Muffin;
+Model dedocinco_Muffin;
+Model dedoseis_Muffin;
+Model dedosiete_Muffin;
+Model dedoocho_Muffin;
 
 Skybox skybox;
 
@@ -300,7 +360,7 @@ int main()
 	Tablero_M.LoadModel("Models/TableroMesaDados_obj.obj");
 	Dado_M = Model();
 	Dado_M.LoadModel("Models/Dado_HoradeAventura_obj.obj");
-	//LÌnea de boliche
+	//L√≠nea de boliche
 	PistaBoliche_M = Model();
 	PistaBoliche_M.LoadModel("Models/PistaBoliche_obj.obj");
 	CanaletaBoliche_M = Model();
@@ -337,6 +397,37 @@ int main()
 	PizzaQueso_M.LoadModel("Models/PizzaQueso_obj.obj");
 	PizzaHawaiana_M = Model();
 	PizzaHawaiana_M.LoadModel("Models/PizzaHawaiana_obj.obj");
+		//Puesto de Hamburguesas
+	hamburguesas_Stripe = Model();
+	hamburguesas_Stripe.LoadModel("Models/hamburguesas_Stripe.obj");
+	//Jaula de Bateo
+	jaulabateo = Model();
+	jaulabateo.LoadModel("Models/jaulabateo.obj");
+	pelota_jaulabateo = Model();
+	pelota_jaulabateo.LoadModel("Models/pelota_jaulabateo.obj");
+	bate_jaulabateo = Model();
+	bate_jaulabateo.LoadModel("Models/bate_jaulabateo.obj");
+	alfombra_jaulabateo = Model();
+	alfombra_jaulabateo.LoadModel("Models/alfombra_jaulabateo.obj");
+	lanzapelotas_jaulabateo = Model();
+	lanzapelotas_jaulabateo.LoadModel("Models/lanzapelotas_jaulabateo.obj");
+	//Lanzamiento de Dardos
+	puesto_Dardos = Model();
+	puesto_Dardos.LoadModel("Models/puesto_Dardos.obj");
+	dardo_Dardos = Model();
+	dardo_Dardos.LoadModel("Models/dardo_Dardos.obj");
+	cohetes_Dardos = Model();
+	cohetes_Dardos.LoadModel("Models/cohetes_Dardos.obj");
+	conejos_Dardos = Model();
+	conejos_Dardos.LoadModel("Models/conejos_Dardos.obj");
+	osos_Dardos = Model();
+	osos_Dardos.LoadModel("Models/osos_Dardos.obj");
+	gam_Dardos = Model();
+	gam_Dardos.LoadModel("Models/globo_amarilloDardos.obj");
+	gaz_Dardos = Model();
+	gaz_Dardos.LoadModel("Models/globo_azulDardos.obj");
+	gro_Dardos = Model();
+	gro_Dardos.LoadModel("Models/globo_rosaDardos.obj");
 	//Rey Helado
 	CuerpoReyHelado_M = Model();
 	CuerpoReyHelado_M.LoadModel("Models/ReyHelado/CuerpoReyHelado_obj.obj");
@@ -436,6 +527,88 @@ int main()
 	BrazoI_B.LoadModel("Models/benito/brazoI_B.obj");
 	BrazoD_B = Model();
 	BrazoD_B.LoadModel("Models/benito/brazoD_B.obj");
+	//Bingo
+	cuerpo_Bingo = Model();
+	cuerpo_Bingo.LoadModel("Models/Bingo/cuerpo_Bingo.obj");
+	brazouno_Bingo = Model();
+	brazouno_Bingo.LoadModel("Models/Bingo/brazouno_Bingo.obj");
+	brazodos_Bingo = Model();
+	brazodos_Bingo.LoadModel("Models/Bingo/brazodos_Bingo.obj");
+	patauno_Bingo = Model();
+	patauno_Bingo.LoadModel("Models/Bingo/patauno_Bingo.obj");
+	patados_Bingo = Model();
+	patados_Bingo.LoadModel("Models/Bingo/patados_Bingo.obj");
+	cola_Bingo = Model();
+	cola_Bingo.LoadModel("Models/Bingo/cola_Bingo.obj");
+	//Bandit
+	cuerpo_Bandit = Model();
+	cuerpo_Bandit.LoadModel("Models/Bandit/cuerpo_Bandit.obj");
+	brazouno_Bandit = Model();
+	brazouno_Bandit.LoadModel("Models/Bandit/brazouno_Bandit.obj");
+	brazodos_Bandit = Model();
+	brazodos_Bandit.LoadModel("Models/Bandit/brazodos_Bandit.obj");
+	patauno_Bandit = Model();
+	patauno_Bandit.LoadModel("Models/Bandit/patauno_Bandit.obj");
+	patados_Bandit = Model();
+	patados_Bandit.LoadModel("Models/Bandit/patados_Bandit.obj");
+	cola_Bandit = Model();
+	cola_Bandit.LoadModel("Models/Bandit/cola_Bandit.obj");
+	//Stripe
+	cuerpo_Stripe = Model();
+	cuerpo_Stripe.LoadModel("Models/Stripe/cuerpo_Stripe.obj");
+	brazouno_Stripe = Model();
+	brazouno_Stripe.LoadModel("Models/Stripe/brazouno_Stripe.obj");
+	brazodos_Stripe = Model();
+	brazodos_Stripe.LoadModel("Models/Stripe/brazodos_Stripe.obj");
+	patauno_Stripe = Model();
+	patauno_Stripe.LoadModel("Models/Stripe/patauno_Stripe.obj");
+	patados_Stripe = Model();
+	patados_Stripe.LoadModel("Models/Stripe/patados_Stripe.obj");
+	cola_Stripe = Model();
+	cola_Stripe.LoadModel("Models/Stripe/cola_Stripe.obj");
+	//Muffin
+	cuerpo_Muffin = Model();
+	cuerpo_Muffin.LoadModel("Models/Muffin/cuerpo_Muffin.obj");
+	ojouno_Muffin = Model();
+	ojouno_Muffin.LoadModel("Models/Muffin/ojouno_Muffin.obj");
+	ojodos_Muffin = Model();
+	ojodos_Muffin.LoadModel("Models/Muffin/ojodos_Muffin.obj");
+	cejauno_Muffin = Model();
+	cejauno_Muffin.LoadModel("Models/Muffin/cejauno_Muffin.obj");
+	cejados_Muffin = Model();
+	cejados_Muffin.LoadModel("Models/Muffin/cejados_Muffin.obj");
+	orejauno_Muffin = Model();
+	orejauno_Muffin.LoadModel("Models/Muffin/orejauno_Muffin.obj");
+	orejados_Muffin = Model();
+	orejados_Muffin.LoadModel("Models/Muffin/orejados_Muffin.obj");
+	hocico_Muffin = Model();
+	hocico_Muffin.LoadModel("Models/Muffin/hocico_Muffin.obj");
+	cola_Muffin = Model();
+	cola_Muffin.LoadModel("Models/Muffin/cola_Muffin.obj");
+	patauno_Muffin = Model();
+	patauno_Muffin.LoadModel("Models/Muffin/patauno_Muffin.obj");
+	patados_Muffin = Model();
+	patados_Muffin.LoadModel("Models/Muffin/patados_Muffin.obj");
+	brazouno_Muffin = Model();
+	brazouno_Muffin.LoadModel("Models/Muffin/brazouno_Muffin.obj");
+	dedouno_Muffin = Model();
+	dedouno_Muffin.LoadModel("Models/Muffin/dedouno_Muffin.obj");
+	dedodos_Muffin = Model();
+	dedodos_Muffin.LoadModel("Models/Muffin/dedodos_Muffin.obj");
+	dedotres_Muffin = Model();
+	dedotres_Muffin.LoadModel("Models/Muffin/dedotres_Muffin.obj");
+	dedocuatro_Muffin = Model();
+	dedocuatro_Muffin.LoadModel("Models/Muffin/dedocuatro_Muffin.obj");
+	brazodos_Muffin = Model();
+	brazodos_Muffin.LoadModel("Models/Muffin/brazodos_Muffin.obj");
+	dedocinco_Muffin = Model();
+	dedocinco_Muffin.LoadModel("Models/Muffin/dedocinco_Muffin.obj");
+	dedoseis_Muffin = Model();
+	dedoseis_Muffin.LoadModel("Models/Muffin/dedoseis_Muffin.obj");
+	dedosiete_Muffin = Model();
+	dedosiete_Muffin.LoadModel("Models/Muffin/dedosiete_Muffin.obj");
+	dedoocho_Muffin = Model();
+	dedoocho_Muffin.LoadModel("Models/Muffin/dedoocho_Muffin.obj");
 
 
 
@@ -453,7 +626,7 @@ int main()
 	Material_opaco = Material(0.3f, 4);
 
 
-	//luz direccional, sÛlo 1 y siempre debe de existir
+	//luz direccional, s√≥lo 1 y siempre debe de existir
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
 		0.4f, 0.4f,
 		0.0f, -1.0f, 0.0f);
@@ -467,7 +640,7 @@ int main()
 	pointLights[0] = PointLight(1.0f, 0.0f, 0.0f,
 		//Intensidad ambiental y tonalidad
 		1.0f, 8.0f,
-		//PosiciÛn x, y, z
+		//Posici√≥n x, y, z
 		0.0f, 10.0f, 0.0f,
 		//No poner en 0.0f, 0.0f, 0.0f en la linea de abajo
 		1.0f, 0.2f, 0.1f);
@@ -477,7 +650,7 @@ int main()
 	pointLights[1] = PointLight(0.0f, 1.0f, 0.0f,
 		//Intensidad ambiental y tonalidad
 		1.0f, 8.0f,
-		//PosiciÛn x, y, z
+		//Posici√≥n x, y, z
 		-34.0f, 10.0f, -25.0f,
 		//No poner en 0.0f, 0.0f, 0.0f en la linea de abajo
 		1.0f, 0.2f, 0.1f);
@@ -487,7 +660,7 @@ int main()
 	pointLights[2] = PointLight(0.0f, 0.0f, 1.0f,
 		//Intensidad ambiental y tonalidad
 		1.0f, 8.0f,
-		//PosiciÛn x, y, z
+		//Posici√≥n x, y, z
 		34.0f, 10.0f, -25.0f,
 		//No poner en 0.0f, 0.0f, 0.0f en la linea de abajo
 		1.0f, 0.2f, 0.1f);
@@ -502,13 +675,13 @@ int main()
 	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
 		//Intensidad ambiental y tonalidad
 		0.0f, 0.0f,
-		//PosiciÛn x, y, z
+		//Posici√≥n x, y, z
 		0.0f, 0.0f, 0.0f,
-		//DirecciÛn de la luz
+		//Direcci√≥n de la luz
 		0.0f, -1.0f, 0.0f,
 		//No poner en 0.0f, 0.0f, 0.0f en la linea de abajo
 		1.0f, 0.0f, 0.0f,
-		//¡ngulo de apertura
+		//√Ångulo de apertura
 		5.0f);
 	spotLightCount++;
 
@@ -525,7 +698,7 @@ int main()
 		deltaTime += (now - lastTime) / limitFPS;
 		lastTime = now;
 		angulovaria += 1.0f * deltaTime;
-		anguloRotacion += 1.0f; // Ajusta este valor para cambiar la velocidad de rotaciÛn
+		anguloRotacion += 1.0f; // Ajusta este valor para cambiar la velocidad de rotaci√≥n
 
 
 		//Recibir eventos del usuario
@@ -544,7 +717,7 @@ int main()
 		uniformEyePosition = shaderList[0].GetEyePositionLocation();
 		uniformColor = shaderList[0].getColorLocation();
 
-		//informaciÛn en el shader de intensidad especular y brillo
+		//informaci√≥n en el shader de intensidad especular y brillo
 		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
 		uniformShininess = shaderList[0].GetShininessLocation();
 
@@ -552,13 +725,13 @@ int main()
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
 		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
-		// luz ligada a la c·mara de tipo flash
-		//sirve para que en tiempo de ejecuciÛn (dentro del while) se cambien propiedades de la luz
+		// luz ligada a la c√°mara de tipo flash
+		//sirve para que en tiempo de ejecuci√≥n (dentro del while) se cambien propiedades de la luz
 		glm::vec3 lowerLight = camera.getCameraPosition();
 		lowerLight.y -= 0.3f;
 		spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
 
-		//informaciÛn al shader de fuentes de iluminaciÛn
+		//informaci√≥n al shader de fuentes de iluminaci√≥n
 		shaderList[0].SetDirectionalLight(&mainLight);
 
 		//Pasar luces al shader
@@ -586,6 +759,15 @@ int main()
 		glm::mat4 modelauxGunter(1.0);
 		glm::mat4 modelauxLimonagrio(1.0);
 		glm::mat4 modelauxCucho(1.0);
+		glm::mat4 modelauxJaulaB(1.0);
+		glm::mat4 modelauxDardos(1.0);
+		glm::mat4 modelauxBingo(1.0);
+		glm::mat4 modelauxBandit(1.0);
+		glm::mat4 modelauxStripe(1.0);
+		glm::mat4 modelauxMuffin(1.0);
+		glm::mat4 modelauxMuffin2(1.0);
+
+
 
 
 		//Piso de la Feria
@@ -659,8 +841,8 @@ int main()
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		PuertaV_2.RenderModel();
 
-		//M·quinas para introducir moneda
-		//M·quina para lanzamiento de dados
+		//M√°quinas para introducir moneda
+		//M√°quina para lanzamiento de dados
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-20.0f, -0.03f, -32.0f));
 		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
@@ -668,7 +850,7 @@ int main()
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		MaquinaMoneda_M.RenderModel();
 
-		//M·quina para lÌnea de boliche
+		//M√°quina para l√≠nea de boliche
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(20.5f, -0.03f, -32.0f));
 		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
@@ -676,7 +858,7 @@ int main()
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		MaquinaMoneda_M.RenderModel();
 
-		//M·quina para jaula de bateo
+		//M√°quina para jaula de bateo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-40.0f, -0.03f, -3.5f));
 		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
@@ -684,7 +866,7 @@ int main()
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		MaquinaMoneda_M.RenderModel();
 
-		//M·quina para lanzamiento de hacha
+		//M√°quina para lanzamiento de hacha
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(37.0f, -0.03f, -3.5f));
 		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
@@ -692,7 +874,7 @@ int main()
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		MaquinaMoneda_M.RenderModel();
 
-		//M·quina para dardos y globos
+		//M√°quina para dardos y globos
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-25.5f, -0.03f, 32.0f));
 		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
@@ -700,7 +882,7 @@ int main()
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		MaquinaMoneda_M.RenderModel();
 
-		//M·quina para golpea al topo
+		//M√°quina para golpea al topo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(21.0f, -0.03f, 32.0f));
 		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
@@ -874,7 +1056,7 @@ int main()
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Dado_M.RenderModel();
 
-		//LÌnea de Boliche
+		//L√≠nea de Boliche
 		//Pista de boliche
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(25.0f, 0.0f, -32.0f));
@@ -1206,7 +1388,156 @@ int main()
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		MazoTopo_M.RenderModel();
 
+		///Lanzamiento de Dardos
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-35.2f, 3.36f, -6.7f));
+		model = glm::scale(model, glm::vec3(0.12f, 0.12f, 0.12f));
+		modelauxDardos = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		puesto_Dardos.RenderModel();
 
+		model = modelauxDardos;
+		model = glm::translate(model, glm::vec3(-22.0f, -6.0f, 12.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		conejos_Dardos.RenderModel();
+
+		model = modelauxDardos;
+		model = glm::translate(model, glm::vec3(-22.0f, -6.6f, 20.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		cohetes_Dardos.RenderModel();
+
+		model = modelauxDardos;
+		model = glm::translate(model, glm::vec3(22.0f, -6.2f, 12.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		osos_Dardos.RenderModel();
+
+		model = modelauxDardos;
+		model = glm::translate(model, glm::vec3(22.0f, -6.6f, 20.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		cohetes_Dardos.RenderModel();
+
+		model = modelauxDardos;
+		model = glm::translate(model, glm::vec3(0.0f, -10.0f, 24.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		dardo_Dardos.RenderModel();
+
+		model = modelauxDardos;
+		model = glm::translate(model, glm::vec3(4.0f, -9.5f, 24.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		dardo_Dardos.RenderModel();
+
+		model = modelauxDardos;
+		model = glm::translate(model, glm::vec3(-4.0f, -9.5f, 24.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		dardo_Dardos.RenderModel();
+
+		//Primer Fila
+		model = modelauxDardos;
+		model = glm::translate(model, glm::vec3(-11.2f, 11.05f, -21.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		gam_Dardos.RenderModel();
+
+		model = modelauxDardos;
+		model = glm::translate(model, glm::vec3(-5.1f, 11.05f, -21.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		gaz_Dardos.RenderModel();
+
+		model = modelauxDardos;
+		model = glm::translate(model, glm::vec3(1.1f, 11.05f, -21.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		gro_Dardos.RenderModel();
+
+		model = modelauxDardos;
+		model = glm::translate(model, glm::vec3(7.2f, 11.05f, -21.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		gam_Dardos.RenderModel();
+
+		model = modelauxDardos;
+		model = glm::translate(model, glm::vec3(13.6f, 11.05f, -21.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		gaz_Dardos.RenderModel();
+
+		//Tercer Fila
+		model = modelauxDardos;
+		model = glm::translate(model, glm::vec3(-11.2f, -2.2f, -21.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		gaz_Dardos.RenderModel();
+
+		model = modelauxDardos;
+		model = glm::translate(model, glm::vec3(-5.1f, -2.2f, -21.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		gro_Dardos.RenderModel();
+
+		model = modelauxDardos;
+		model = glm::translate(model, glm::vec3(1.1f, -2.2f, -21.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		gam_Dardos.RenderModel();
+
+		model = modelauxDardos;
+		model = glm::translate(model, glm::vec3(7.2f, -2.2f, -21.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		gaz_Dardos.RenderModel();
+
+		model = modelauxDardos;
+		model = glm::translate(model, glm::vec3(13.6f, -2.2f, -21.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		gro_Dardos.RenderModel();
+
+		//Segunda Fila
+		model = modelauxDardos;
+		model = glm::translate(model, glm::vec3(-11.2f, 4.7f, -21.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		gro_Dardos.RenderModel();
+
+		model = modelauxDardos;
+		model = glm::translate(model, glm::vec3(-5.1f, 4.5f, -21.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		gam_Dardos.RenderModel();
+
+		model = modelauxDardos;
+		model = glm::translate(model, glm::vec3(1.1f, 4.5f, -21.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		gaz_Dardos.RenderModel();
+
+		model = modelauxDardos;
+		model = glm::translate(model, glm::vec3(7.2f, 4.5f, -21.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		gro_Dardos.RenderModel();
+
+		model = modelauxDardos;
+		model = glm::translate(model, glm::vec3(13.6f, 4.5f, -21.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		gam_Dardos.RenderModel();
+
+		//Jaula de Bateo
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-21.2f, 3.0f, 29.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.12f, 0.12f, 0.12f));
+		modelauxJaulaB = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		jaulabateo.RenderModel();
+
+		model = modelauxJaulaB;
+		model = glm::translate(model, glm::vec3(24.5f, -25.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		alfombra_jaulabateo.RenderModel();
+
+		model = modelauxJaulaB;
+		model = glm::translate(model, glm::vec3(24.5f, -22.4f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		bate_jaulabateo.RenderModel();
+
+		model = modelauxJaulaB;
+		model = glm::translate(model, glm::vec3(-34.2f, -1.0f, -0.6f));
+		modelauxJaulaB = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		lanzapelotas_jaulabateo.RenderModel();
+		
+		model = modelauxJaulaB;
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		pelota_jaulabateo.RenderModel();
 		/*
 		//Moneda
 		model = glm::mat4(1.0);
@@ -1422,10 +1753,255 @@ int main()
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		servilletas.RenderModel();
 
+		//Puesto de Hamburguesas
+		//Puesto
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(12.0f, 0.0f, -10.0f));
+		model = glm::scale(model, glm::vec3(0.16f, 0.16f, 0.16f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		hamburguesas_Stripe.RenderModel();
+
 		//====== PERSONAJES ======
-
 		//Muffin (Bluey)
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 1.8f, 53.0));
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, mainWindow.getarticulacion3()));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		modelauxMuffin = model;
+		model = glm::scale(model, glm::vec3(0.044f, 0.048f, 0.044f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		cuerpo_Muffin.RenderModel();
+		//Ojo Derecho
+		model = modelauxMuffin;
+		model = glm::translate(model, glm::vec3(-0.58f, 0.36f, -0.32f));
+		model = glm::scale(model, glm::vec3(0.045f, 0.055f, 0.045f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		ojouno_Muffin.RenderModel();
+		//Ceja Derecha
+		model = modelauxMuffin;
+		model = glm::translate(model, glm::vec3(-0.77f, 0.95f, -0.36f));
+		model = glm::scale(model, glm::vec3(0.045f, 0.045f, 0.045f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		cejauno_Muffin.RenderModel();
+		//Ojo Izquierdo
+		model = modelauxMuffin;
+		model = glm::translate(model, glm::vec3(-0.58f, 0.36f, 0.32f));
+		model = glm::scale(model, glm::vec3(0.045f, 0.055f, 0.045f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		ojodos_Muffin.RenderModel();
+		//Ceja Izquierda
+		model = modelauxMuffin;
+		model = glm::translate(model, glm::vec3(-0.77f, 0.95f, 0.36f));
+		model = glm::scale(model, glm::vec3(0.045f, 0.045f, 0.045f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		cejados_Muffin.RenderModel();
+		//Oreja Derecha
+		model = modelauxMuffin;
+		model = glm::translate(model, glm::vec3(0.0f, 1.0f, -0.4f));
+		model = glm::scale(model, glm::vec3(0.045f, 0.055f, 0.045f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		orejauno_Muffin.RenderModel();
+		//Oreja Izquierda
+		model = modelauxMuffin;
+		model = glm::translate(model, glm::vec3(0.0f, 1.0f, 0.4f));
+		model = glm::scale(model, glm::vec3(0.045f, 0.055f, 0.045f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		orejados_Muffin.RenderModel();
+		//Hocico
+		model = modelauxMuffin;
+		model = glm::translate(model, glm::vec3(-0.6f, -0.1f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.045f, 0.055f, 0.045f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		hocico_Muffin.RenderModel();
+		//Pata Derecha
+		model = modelauxMuffin;
+		model = glm::translate(model, glm::vec3(0.0f, -1.0f, -0.4f));
+		model = glm::scale(model, glm::vec3(0.045f, 0.055f, 0.045f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		patauno_Muffin.RenderModel();
+		//Pata Izquierda
+		model = modelauxMuffin;
+		model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.4f));
+		model = glm::scale(model, glm::vec3(0.045f, 0.055f, 0.045f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		patados_Muffin.RenderModel();
+		//Cola
+		model = modelauxMuffin;
+		model = glm::translate(model, glm::vec3(0.72f, -0.6f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.04f, 0.045f, 0.04f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		cola_Muffin.RenderModel();
+		//Brazo Izquierdo
+		model = modelauxMuffin;
+		model = glm::translate(model, glm::vec3(0.0f, -0.5f, -0.78f));
+		model = glm::scale(model, glm::vec3(0.05f, 0.04f, 0.04f));
+		modelauxMuffin2 = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		brazouno_Muffin.RenderModel();
+		//Dedo uno
+		model = modelauxMuffin2;
+		model = glm::translate(model, glm::vec3(0.0f, 1.0f, -7.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		dedouno_Muffin.RenderModel();
+		//Dedo dos
+		model = modelauxMuffin2;
+		model = glm::translate(model, glm::vec3(0.0f, 1.6f, -7.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		dedodos_Muffin.RenderModel();
+		//Dedo tres
+		model = modelauxMuffin2;
+		model = glm::translate(model, glm::vec3(0.0f, -1.7f, -7.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		dedotres_Muffin.RenderModel();
+		//Dedo cuatro
+		model = modelauxMuffin2;
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -7.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		dedocuatro_Muffin.RenderModel();
+		//Brazo Derecho
+		model = modelauxMuffin;
+		model = glm::translate(model, glm::vec3(0.0f, -0.5f, 0.78f));
+		model = glm::scale(model, glm::vec3(0.05f, 0.04f, 0.04f));
+		modelauxMuffin2 = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		brazodos_Muffin.RenderModel();
+		//Dedo cinco
+		model = modelauxMuffin2;
+		model = glm::translate(model, glm::vec3(0.0f, 1.0f, 7.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		dedocinco_Muffin.RenderModel();
+		//Dedo seis
+		model = modelauxMuffin2;
+		model = glm::translate(model, glm::vec3(0.0f, 1.6f, 7.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		dedoseis_Muffin.RenderModel();
+		//Dedo siete
+		model = modelauxMuffin2;
+		model = glm::translate(model, glm::vec3(0.0f, -1.7f, 7.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		dedosiete_Muffin.RenderModel();
+		//Dedo ocho
+		model = modelauxMuffin2;
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 7.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		dedoocho_Muffin.RenderModel();
+		
+		//Bingo NPC (Bluey)
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-30.0f, 2.0f, -2.7f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		modelauxBingo = model;
+		model = glm::scale(model, glm::vec3(0.044f, 0.048f, 0.044f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		cuerpo_Bingo.RenderModel();
+		//Brazo Izquierdo
+		model = modelauxBingo;
+		model = glm::translate(model, glm::vec3(0.0f, -0.5f, -0.76f));
+		model = glm::scale(model, glm::vec3(0.05f, 0.04f, 0.04f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		brazouno_Bingo.RenderModel();
+		//Brazo Derecho
+		model = modelauxBingo;
+		model = glm::translate(model, glm::vec3(0.0f, -0.5f, 0.76f));
+		model = glm::scale(model, glm::vec3(0.05f, 0.04f, 0.04f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		brazodos_Bingo.RenderModel();
+		//Pata Derecha
+		model = modelauxBingo;
+		model = glm::translate(model, glm::vec3(0.0f, -1.1f, -0.5f));
+		model = glm::scale(model, glm::vec3(0.045f, 0.055f, 0.045f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		patauno_Bingo.RenderModel();
+		//Pata Izquierda
+		model = modelauxBingo;
+		model = glm::translate(model, glm::vec3(0.0f, -1.1f, 0.5f));
+		model = glm::scale(model, glm::vec3(0.045f, 0.055f, 0.045f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		patados_Bingo.RenderModel();
+		//Cola
+		model = modelauxBingo;
+		model = glm::translate(model, glm::vec3(0.72f, -0.6f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.04f, 0.045f, 0.04f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		cola_Bingo.RenderModel();
 
+		//Bandit NPC (Bluey)
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-16.2f, 3.3f, 34.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		modelauxBandit = model;
+		model = glm::scale(model, glm::vec3(0.044f, 0.048f, 0.044f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		cuerpo_Bandit.RenderModel();
+		//Brazo Izquierdo
+		model = modelauxBandit;
+		model = glm::translate(model, glm::vec3(0.0f, -1.0f, -0.9f));
+		model = glm::scale(model, glm::vec3(0.05f, 0.04f, 0.04f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		brazouno_Bandit.RenderModel();
+		//Brazo Derecho
+		model = modelauxBandit;
+		model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.9f));
+		model = glm::scale(model, glm::vec3(0.05f, 0.04f, 0.04f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		brazodos_Bandit.RenderModel();
+		//Pata Derecha
+		model = modelauxBandit;
+		model = glm::translate(model, glm::vec3(0.0f, -2.0f, -0.5f));
+		model = glm::scale(model, glm::vec3(0.045f, 0.055f, 0.045f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		patauno_Bandit.RenderModel();
+		//Pata Izquierda
+		model = modelauxBandit;
+		model = glm::translate(model, glm::vec3(0.0f, -2.0f, 0.5f));
+		model = glm::scale(model, glm::vec3(0.045f, 0.055f, 0.045f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		patados_Bandit.RenderModel();
+		//Cola
+		model = modelauxBandit;
+		model = glm::translate(model, glm::vec3(0.85f, -1.5f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.04f, 0.045f, 0.04f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		cola_Bandit.RenderModel();
+
+		//Stripe (Bluey)
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(12.0f, 2.8f, -11.5f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		modelauxStripe = model;
+		model = glm::scale(model, glm::vec3(0.044f, 0.048f, 0.044f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		cuerpo_Stripe.RenderModel();
+		//Brazo Izquierdo
+		model = modelauxStripe;
+		model = glm::translate(model, glm::vec3(0.0f, -0.5f, -0.92f));
+		model = glm::scale(model, glm::vec3(0.05f, 0.04f, 0.04f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		brazouno_Stripe.RenderModel();
+		//Brazo Derecho
+		model = modelauxStripe;
+		model = glm::translate(model, glm::vec3(0.0f, -0.5f, 0.92f));
+		model = glm::scale(model, glm::vec3(0.05f, 0.04f, 0.04f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		brazodos_Stripe.RenderModel();
+		//Pata Derecha
+		model = modelauxStripe;
+		model = glm::translate(model, glm::vec3(0.0f, -1.4f, -0.5f));
+		model = glm::scale(model, glm::vec3(0.045f, 0.055f, 0.045f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		patauno_Stripe.RenderModel();
+		//Pata Izquierda
+		model = modelauxStripe;
+		model = glm::translate(model, glm::vec3(0.0f, -1.4f, 0.5f));
+		model = glm::scale(model, glm::vec3(0.045f, 0.055f, 0.045f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		patados_Stripe.RenderModel();
+		//Cola
+		model = modelauxStripe;
+		model = glm::translate(model, glm::vec3(0.77f, -1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.04f, 0.045f, 0.04f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		cola_Stripe.RenderModel();
 
 		//Cucho (Don Gato y su Pandilla)
 		//Cuerpo
