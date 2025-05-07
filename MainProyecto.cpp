@@ -45,6 +45,9 @@ Camera camera;
 bool puertaAbierta = false;  // Controla si la puerta está abierta o cerrada
 float anguloPuerta = 0.0f;  // Ángulo actual de la puerta
 float velocidadPuerta = 2.0f; // Velocidad de apertura/cierre
+float angulovaria = 0.0f;
+static float anguloRotacion = 0.0f;
+
 
 //Texturas
 //Texture brickTexture;
@@ -133,6 +136,33 @@ Model PiernasLimonagrio_M;
 Model ManosLimonagrio_M;
 Model CabezaLimonagrio_M;
 Model CaraLimonagrio_M;
+//Top Cat
+//Cucho
+Model Cuerpo_C;
+Model Cabeza_C;
+Model PataI_C;
+Model PataD_C;
+Model Cola_C;
+Model ManoI_C;
+Model ManoD_C;
+Model BrazoI_C;
+Model BrazoD_C;
+//Don Gato
+Model Cuerpo_TC;
+Model Cabeza_TC;
+Model PataI_TC;
+Model PataD_TC;
+Model BrazoI_TC;
+Model BrazoD_TC;
+Model Cola_TC;
+//Benito
+Model Cuerpo_B;
+Model Cabeza_B;
+Model PataI_B;
+Model PataD_B;
+Model BrazoI_B;
+Model BrazoD_B;
+
 
 Skybox skybox;
 
@@ -332,6 +362,54 @@ int main()
 	CabezaLimonagrio_M.LoadModel("Models/Limonagrio/CabezaLimonagrio_obj.obj");
 	CaraLimonagrio_M = Model();
 	CaraLimonagrio_M.LoadModel("Models/Limonagrio/CaraLimonagrio_obj.obj");
+	//Cucho
+	Cuerpo_C = Model();
+	Cuerpo_C.LoadModel("Models/Cucho/Cuerpo_C.obj");
+	Cabeza_C = Model();
+	Cabeza_C.LoadModel("Models/Cucho/Cabeza_C.obj");
+	PataI_C = Model();
+	PataI_C.LoadModel("Models/Cucho/pataI_C.obj");
+	PataD_C = Model();
+	PataD_C.LoadModel("Models/Cucho/pataD_C.obj");
+	Cola_C = Model();
+	Cola_C.LoadModel("Models/Cucho/Cola_C.obj");
+	ManoI_C = Model();
+	ManoI_C.LoadModel("Models/Cucho/manoI_C.obj");
+	ManoD_C = Model();
+	ManoD_C.LoadModel("Models/Cucho/manoD_C.obj");
+	BrazoI_C = Model();
+	BrazoI_C.LoadModel("Models/Cucho/brazoI_C.obj");
+	BrazoD_C = Model();
+	BrazoD_C.LoadModel("Models/Cucho/brazoD_C.obj");
+	//Don Gato
+	Cuerpo_TC = Model();
+	Cuerpo_TC.LoadModel("Models/DonGato/Cuerpo_TC.obj");
+	Cabeza_TC = Model();
+	Cabeza_TC.LoadModel("Models/DonGato/Cabeza_TC.obj");
+	PataI_TC = Model();
+	PataI_TC.LoadModel("Models/DonGato/pataI_TC.obj");
+	PataD_TC = Model();
+	PataD_TC.LoadModel("Models/DonGato/pataD_TC.obj");
+	BrazoI_TC = Model();
+	BrazoI_TC.LoadModel("Models/DonGato/brazoI_TC.obj");
+	BrazoD_TC = Model();
+	BrazoD_TC.LoadModel("Models/DonGato/brazoD_TC.obj");
+	Cola_TC = Model();
+	Cola_TC.LoadModel("Models/DonGato/Cola_TC.obj");
+	//Benito
+	Cuerpo_B = Model();
+	Cuerpo_B.LoadModel("Models/benito/Cuerpo_B.obj");
+	Cabeza_B = Model();
+	Cabeza_B.LoadModel("Models/benito/Cabeza_B.obj");
+	PataI_B = Model();
+	PataI_B.LoadModel("Models/benito/pataI_B.obj");
+	PataD_B = Model();
+	PataD_B.LoadModel("Models/benito/pataD_B.obj");
+	BrazoI_B = Model();
+	BrazoI_B.LoadModel("Models/benito/brazoI_B.obj");
+	BrazoD_B = Model();
+	BrazoD_B.LoadModel("Models/benito/brazoD_B.obj");
+
 
 
 	std::vector<std::string> skyboxFaces;
@@ -419,6 +497,9 @@ int main()
 		deltaTime = now - lastTime;
 		deltaTime += (now - lastTime) / limitFPS;
 		lastTime = now;
+		angulovaria += 1.0f * deltaTime;
+		anguloRotacion += 1.0f; // Ajusta este valor para cambiar la velocidad de rotación
+
 
 		//Recibir eventos del usuario
 		glfwPollEvents();
@@ -475,6 +556,8 @@ int main()
 		glm::mat4 modelauxBMO(1.0);
 		glm::mat4 modelauxGunter(1.0);
 		glm::mat4 modelauxLimonagrio(1.0);
+		glm::mat4 modelauxCucho(1.0);
+
 
 		//Piso de la Feria
 		model = glm::mat4(1.0);
@@ -510,13 +593,13 @@ int main()
 		}
 		modelauxPuertas = model;
 		model = glm::translate(model, glm::vec3(-10.0f, 8.49f, 50.842f));
-		model = glm::rotate(model, anguloPuerta * toRadians, glm::vec3(0.0f, -1.0f, 0.0f));
+		model = glm::rotate(model, anguloPuerta * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		PuertaN_1.RenderModel();
 		model = modelauxPuertas;
 		model = glm::translate(model, glm::vec3(10.0f, 8.49f, 50.842f));
-		model = glm::rotate(model, anguloPuerta * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, anguloPuerta * toRadians, glm::vec3(0.0f, -1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		PuertaN_2.RenderModel();
@@ -1289,7 +1372,11 @@ int main()
 		tabla.RenderModel();
 		//Trompo
 		modelauxTacos = model;
+		if (anguloRotacion >= 360.0f) {
+			anguloRotacion -= 360.0f;
+		}
 		model = glm::translate(model, glm::vec3(-6.805f, 1.893f, -1.72f));
+		model = glm::rotate(model, glm::radians(anguloRotacion), glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		trompo.RenderModel();
@@ -1311,7 +1398,155 @@ int main()
 		//Muffin (Bluey)
 
 
-		//Cucho (Don Gato y su Pandilla
+		//Cucho (Don Gato y su Pandilla)
+		//Cuerpo
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-12.0f, 2.37f, -12.5f));
+		model = glm::scale(model, glm::vec3(0.28f, 0.28f, 0.28f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		modelauxCucho = model;
+		Cuerpo_C.RenderModel();
+		//Cabeza
+		model = modelauxCucho;
+		model = glm::translate(model, glm::vec3(0.0f, 4.082f, -0.056f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Cabeza_C.RenderModel();
+		//Patas
+		//Pata izquierda
+		model = modelauxCucho;
+		model = glm::translate(model, glm::vec3(1.0f, -3.943f, 0.196f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		PataI_C.RenderModel();
+		//Pata derecha
+		model = modelauxCucho;
+		model = glm::translate(model, glm::vec3(-1.0f, -3.943f, 0.196f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		PataD_C.RenderModel();
+		//Brazos
+		//Brazo izquierdo
+		model = modelauxCucho;
+		model = glm::translate(model, glm::vec3(1.085f, 1.686f, -0.029f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		BrazoI_C.RenderModel();
+		//Mano
+		model = glm::translate(model, glm::vec3(1.663f, -1.661f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		ManoI_C.RenderModel();
+		//Brazo derecho
+		model = modelauxCucho;
+		model = glm::translate(model, glm::vec3(-1.085f, 1.686f, -0.029f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		BrazoD_C.RenderModel();
+		//Mano
+		model = glm::translate(model, glm::vec3(-1.663f, -1.661f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		ManoD_C.RenderModel();
+		//Cola
+		model = modelauxCucho;
+		model = glm::translate(model, glm::vec3(-0.064f, -0.187f, -0.426f));
+		model = glm::rotate(model, sin(glm::radians(angulovaria * 2)), glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Cola_C.RenderModel();
+
+		//Don Gato (Don Gato y su Pandilla)
+		//Cuerpo
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(12.5f, 2.4f, 7.5f));
+		model = glm::scale(model, glm::vec3(0.27f, 0.27f, 0.27f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		modelauxCucho = model;
+		Cuerpo_TC.RenderModel();
+		//Cabeza
+		model = modelauxCucho;
+		model = glm::translate(model, glm::vec3(0.0f, 3.618f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Cabeza_TC.RenderModel();
+		//Patas
+		//Pata izquierda
+		model = modelauxCucho;
+		model = glm::translate(model, glm::vec3(0.9f, -5.25f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		PataI_TC.RenderModel();
+		//Pata derecha
+		model = modelauxCucho;
+		model = glm::translate(model, glm::vec3(-0.9f, -5.25f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		PataD_TC.RenderModel();
+		//Brazos
+		//Brazo izquierdo
+		model = modelauxCucho;
+		model = glm::translate(model, glm::vec3(1.5f, 1.8f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		BrazoI_TC.RenderModel();
+		//Brazo derecho
+		model = modelauxCucho;
+		model = glm::translate(model, glm::vec3(-1.5f, 1.8f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		BrazoD_TC.RenderModel();
+		//Cola
+		model = modelauxCucho;
+		model = glm::translate(model, glm::vec3(-0.064f, -0.187f, -0.326f));
+		model = glm::rotate(model, cos(glm::radians(angulovaria)), glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Cola_TC.RenderModel();
+
+		//Benito (Don Gato y su Pandilla)
+		//Cuerpo
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(44.5f, 1.5f, 1.0f));
+		model = glm::scale(model, glm::vec3(0.27f, 0.27f, 0.27f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		modelauxCucho = model;
+		Cuerpo_B.RenderModel();
+		//Cabeza
+		model = modelauxCucho;
+		model = glm::translate(model, glm::vec3(0.0f, 2.624f, -0.143f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Cabeza_B.RenderModel();
+		//Patas
+		//Pata izquierda
+		model = modelauxCucho;
+		model = glm::translate(model, glm::vec3(0.884f, -2.622f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		PataI_B.RenderModel();
+		//Pata derecha
+		model = modelauxCucho;
+		model = glm::translate(model, glm::vec3(-0.884f, -2.622f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		PataD_B.RenderModel();
+		//Brazos
+		//Brazo izquierdo
+		model = modelauxCucho;
+		model = glm::translate(model, glm::vec3(2.074f, 1.575f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		BrazoI_B.RenderModel();
+		//Brazo derecho
+		model = modelauxCucho;
+		model = glm::translate(model, glm::vec3(-2.074f, 1.575f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		BrazoD_B.RenderModel();
 
 
 		//Rey Helado (Hora de Aventura)
@@ -1383,7 +1618,7 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		PicoGunter_M.RenderModel();
-		
+
 		//Aletas
 		model = modelauxGunter;
 		model = glm::translate(model, glm::vec3(0.0f, 0.3f, 0.2f));
