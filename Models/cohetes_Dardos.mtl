@@ -12,5 +12,6 @@ newmtl Material__348
 	Kd 0.5880 0.5880 0.5880
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka C:\Users\Lap\OneDrive - UNIVERSIDAD NACIONAL AUTÓNOMA DE MÉXICO\Documents\Proyecto CGIHC\Textures\juguetes_dardoPDardos.jpg
-	map_Kd C:\Users\Lap\OneDrive - UNIVERSIDAD NACIONAL AUTÓNOMA DE MÉXICO\Documents\Proyecto CGIHC\Textures\juguetes_dardoPDardos.jpg
+	map_Ka juguetes_dardoPDardos.jpg
+	map_Kd juguetes_dardoPDardos.jpg
+
