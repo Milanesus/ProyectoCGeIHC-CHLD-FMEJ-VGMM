@@ -234,7 +234,8 @@ Model dedoseis_Muffin;
 Model dedosiete_Muffin;
 Model dedoocho_Muffin;
 
-Skybox skybox;
+Skybox skyboxdia;
+Skybox skyboxnoche;
 
 //materiales
 Material Material_brillante;
@@ -612,15 +613,25 @@ int main()
 
 
 
-	std::vector<std::string> skyboxFaces;
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_lf.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_dn.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_up.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_bk.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_ft.tga");
+	std::vector<std::string> skyboxdiaFaces;
+	skyboxdiaFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
+	skyboxdiaFaces.push_back("Textures/Skybox/cupertin-lake_lf.tga");
+	skyboxdiaFaces.push_back("Textures/Skybox/cupertin-lake_dn.tga");
+	skyboxdiaFaces.push_back("Textures/Skybox/cupertin-lake_up.tga");
+	skyboxdiaFaces.push_back("Textures/Skybox/cupertin-lake_bk.tga");
+	skyboxdiaFaces.push_back("Textures/Skybox/cupertin-lake_ft.tga");
 
-	skybox = Skybox(skyboxFaces);
+	skyboxdia = Skybox(skyboxdiaFaces);
+
+	std::vector<std::string> skyboxnocheFaces;
+	skyboxnocheFaces.push_back("Textures/Skybox/cupertin-lake-night_rt.tga");
+	skyboxnocheFaces.push_back("Textures/Skybox/cupertin-lake-night_lf.tga");
+	skyboxnocheFaces.push_back("Textures/Skybox/cupertin-lake-night_dn.tga");
+	skyboxnocheFaces.push_back("Textures/Skybox/cupertin-lake-night_up.tga");
+	skyboxnocheFaces.push_back("Textures/Skybox/cupertin-lake-night_bk.tga");
+	skyboxnocheFaces.push_back("Textures/Skybox/cupertin-lake-night_ft.tga");
+
+	skyboxnoche = Skybox(skyboxnocheFaces);
 
 	Material_brillante = Material(4.0f, 256);
 	Material_opaco = Material(0.3f, 4);
@@ -628,7 +639,7 @@ int main()
 
 	//luz direccional, sólo 1 y siempre debe de existir
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
-		0.4f, 0.4f,
+		0.5f, 0.5,
 		0.0f, -1.0f, 0.0f);
 
 	//==================POINTLIGHTS==================
@@ -709,7 +720,17 @@ int main()
 		// Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		skybox.DrawSkybox(camera.calculateViewMatrix(), projection);
+		
+		double tiempoActualSkybox = glfwGetTime();
+		double tiempoCiclo = fmod(tiempoActualSkybox, 120.0);
+
+		if (tiempoCiclo < 60.0) {
+			skyboxdia.DrawSkybox(camera.calculateViewMatrix(), projection);
+		}
+		else {
+			skyboxnoche.DrawSkybox(camera.calculateViewMatrix(), projection);
+		}
+
 		shaderList[0].UseShader();
 		uniformModel = shaderList[0].GetModelLocation();
 		uniformProjection = shaderList[0].GetProjectionLocation();
@@ -731,6 +752,17 @@ int main()
 		lowerLight.y -= 0.3f;
 		spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
 
+		if (tiempoCiclo < 60.0) {
+			mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
+				0.5f, 0.5f,        
+				0.0f, -1.0f, 0.0f);
+		}
+		else {
+			mainLight = DirectionalLight(0.1f, 0.1f, 0.5f,
+				0.8f, 0.8f,
+				0.0f, -1.0f, 0.0f);
+		}
+		
 		//información al shader de fuentes de iluminación
 		shaderList[0].SetDirectionalLight(&mainLight);
 
@@ -1248,10 +1280,10 @@ int main()
 		int numeroAleatorio = 1;
 
 		srand(static_cast<unsigned int>(time(0)));
-		double currentTime = glfwGetTime();
-		if (currentTime - tiempotopos >= 0.9) {
+		double tiempoActualTopos = glfwGetTime();
+		if (tiempoActualTopos - tiempotopos >= 0.9) {
 			numeroAleatorio = (rand() % 3) + 1;
-			tiempotopos = currentTime;
+			tiempotopos = tiempoActualTopos;
 		}
 
 		//Topo 1
