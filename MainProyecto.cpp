@@ -1912,6 +1912,7 @@ int main()
 		model = modelauxMuffin;
 		model = glm::translate(model, glm::vec3(0.72f, -0.6f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.04f, 0.045f, 0.04f));
+		model = glm::rotate(model, sin(glm::radians(angulovaria * 1)), glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		cola_Muffin.RenderModel();
 		//Brazo Izquierdo
@@ -2005,6 +2006,7 @@ int main()
 		model = modelauxBingo;
 		model = glm::translate(model, glm::vec3(0.72f, -0.6f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.04f, 0.045f, 0.04f));
+		model = glm::rotate(model, sin(glm::radians(angulovaria * 1)), glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		cola_Bingo.RenderModel();
 
@@ -2044,6 +2046,7 @@ int main()
 		model = modelauxBandit;
 		model = glm::translate(model, glm::vec3(0.85f, -1.5f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.04f, 0.045f, 0.04f));
+		model = glm::rotate(model, sin(glm::radians(angulovaria * 1)), glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		cola_Bandit.RenderModel();
 
@@ -2083,6 +2086,7 @@ int main()
 		model = modelauxStripe;
 		model = glm::translate(model, glm::vec3(0.77f, -1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.04f, 0.045f, 0.04f));
+		model = glm::rotate(model, sin(glm::radians(angulovaria * 1)), glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		cola_Stripe.RenderModel();
 
