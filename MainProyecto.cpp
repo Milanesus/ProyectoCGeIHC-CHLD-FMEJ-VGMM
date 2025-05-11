@@ -27,7 +27,7 @@
 #include"Model.h"
 #include "Skybox.h"
 
-//para iluminaci√≥n
+//para iluminaciÛn
 #include "CommonValues.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
@@ -35,6 +35,9 @@
 #include "Material.h"
 const float toRadians = 3.14159265f / 180.0f;
 
+float tiempoDurante;	
+bool Ciclo_Dia;
+const float tiempoCiclo = 1000.0f;
 
 Window mainWindow;
 std::vector<Mesh*> meshList;
@@ -42,11 +45,44 @@ std::vector<Shader> shaderList;
 
 Camera camera;
 //Animacion
-bool puertaAbierta = false;  // Controla si la puerta est√° abierta o cerrada
-float anguloPuerta = 0.0f;  // √Ångulo actual de la puerta
+//Puertas
+bool puertaAbierta = false;  // Controla si la puerta est· abierta o cerrada
+float anguloPuerta = 0.0f;  // ¡ngulo actual de la puerta
 float velocidadPuerta = 2.0f; // Velocidad de apertura/cierre
 float angulovaria = 0.0f;
 static float anguloRotacion = 0.0f;
+
+//Muffin
+float MuffinAngulo = 0.0f;
+glm::vec3 MuffinPos = glm::vec3(0.0f, 1.8f, 53.0f); // posiciÛn†inicial
+
+float MovPata = 0.0f;
+float MovPataOffset;
+bool Caminar = false;
+
+
+//Dados
+float movDado, rotDado;
+float movDadoOffset, rotDadoOffset;
+bool caer, girar;
+bool dadoCaido = false;
+
+//Hacha
+float movHacha;
+float movHachaOffset;
+float rotHacha;
+float rotHachaOffset;
+bool avanza;
+bool girarHacha=false;
+
+//Bola
+float movBola;
+float movBolaOffset;
+float rotBola;
+float rotBolaOffset;
+bool avanzaBola;
+bool girarBola = false;
+
 
 
 //Texturas
@@ -98,7 +134,7 @@ Model Base_M;
 Model Borde_M;
 Model Tablero_M;
 Model Dado_M;
-//L√≠nea de boliche
+//LÌnea de boliche
 Model PistaBoliche_M;
 Model CanaletaBoliche_M;
 Model Bolo_M;
@@ -241,6 +277,14 @@ Skybox skyboxnoche;
 //materiales
 Material Material_brillante;
 Material Material_opaco;
+Material Material_metalico;
+Material Material_plastico;
+Material Material_goma;
+Material Material_vidrio;
+Material Material_seda;
+Material Material_madera;
+Material Material_piso;
+
 
 bool bandera = false;
 
@@ -250,7 +294,7 @@ GLfloat lastTime = 0.0f;
 static double limitFPS = 1.0 / 60.0;
 
 // luz direccional
-DirectionalLight mainLight;
+DirectionalLight mainLight, LightDAY, LightNIGHT;
 //para declarar varias luces de tipo pointlight
 PointLight pointLights[MAX_POINT_LIGHTS];
 SpotLight spotLights[MAX_SPOT_LIGHTS];
@@ -277,7 +321,7 @@ int main()
 
 	CreateShaders();
 
-	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.3f, 0.5f);
+	camera = Camera(glm::vec3(0.0f, 3.4f, 53.0), glm::vec3(0.0f, 1.0f, 0.0f), 180.0f, 180.0f, 0.3f, 0.5f);
 
 	//Modelos 
 	Piso_M = Model();
@@ -364,7 +408,7 @@ int main()
 	Tablero_M.LoadModel("Models/TableroMesaDados_obj.obj");
 	Dado_M = Model();
 	Dado_M.LoadModel("Models/Dado_HoradeAventura_obj.obj");
-	//L√≠nea de boliche
+	//LÌnea de boliche
 	PistaBoliche_M = Model();
 	PistaBoliche_M.LoadModel("Models/PistaBoliche_obj.obj");
 	CanaletaBoliche_M = Model();
@@ -401,7 +445,7 @@ int main()
 	PizzaQueso_M.LoadModel("Models/PizzaQueso_obj.obj");
 	PizzaHawaiana_M = Model();
 	PizzaHawaiana_M.LoadModel("Models/PizzaHawaiana_obj.obj");
-		//Puesto de Hamburguesas
+	//Puesto de Hamburguesas
 	hamburguesas_Stripe = Model();
 	hamburguesas_Stripe.LoadModel("Models/hamburguesas_Stripe.obj");
 	//Jaula de Bateo
@@ -617,33 +661,41 @@ int main()
 
 
 	std::vector<std::string> skyboxdiaFaces;
-	skyboxdiaFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
-	skyboxdiaFaces.push_back("Textures/Skybox/cupertin-lake_lf.tga");
-	skyboxdiaFaces.push_back("Textures/Skybox/cupertin-lake_dn.tga");
-	skyboxdiaFaces.push_back("Textures/Skybox/cupertin-lake_up.tga");
-	skyboxdiaFaces.push_back("Textures/Skybox/cupertin-lake_bk.tga");
-	skyboxdiaFaces.push_back("Textures/Skybox/cupertin-lake_ft.tga");
+	skyboxdiaFaces.push_back("Textures/Skybox/lake_rt.jpg");
+	skyboxdiaFaces.push_back("Textures/Skybox/lake_lf.jpg");
+	skyboxdiaFaces.push_back("Textures/Skybox/lake_dn.jpg");
+	skyboxdiaFaces.push_back("Textures/Skybox/lake_up.jpg");
+	skyboxdiaFaces.push_back("Textures/Skybox/lake_bk.jpg");
+	skyboxdiaFaces.push_back("Textures/Skybox/lake_ft.jpg");
+
 
 	skyboxdia = Skybox(skyboxdiaFaces);
 
 	std::vector<std::string> skyboxnocheFaces;
-	skyboxnocheFaces.push_back("Textures/Skybox/cupertin-lake-night_rt.tga");
-	skyboxnocheFaces.push_back("Textures/Skybox/cupertin-lake-night_lf.tga");
-	skyboxnocheFaces.push_back("Textures/Skybox/cupertin-lake-night_dn.tga");
-	skyboxnocheFaces.push_back("Textures/Skybox/cupertin-lake-night_up.tga");
-	skyboxnocheFaces.push_back("Textures/Skybox/cupertin-lake-night_bk.tga");
-	skyboxnocheFaces.push_back("Textures/Skybox/cupertin-lake-night_ft.tga");
+	skyboxnocheFaces.push_back("Textures/Skybox/lake-n_rt.jpg");
+	skyboxnocheFaces.push_back("Textures/Skybox/lake-n_lf.jpg");
+	skyboxnocheFaces.push_back("Textures/Skybox/lake-n_dn.jpg");
+	skyboxnocheFaces.push_back("Textures/Skybox/lake-n_up.jpg");
+	skyboxnocheFaces.push_back("Textures/Skybox/lake-n_bk.jpg");
+	skyboxnocheFaces.push_back("Textures/Skybox/lake-n_ft.jpg");
 
 	skyboxnoche = Skybox(skyboxnocheFaces);
 
 	Material_brillante = Material(4.0f, 256);
 	Material_opaco = Material(0.3f, 4);
+	Material_metalico = Material(5.0f, 1024);       // Alto brillo como metal pulido
+	Material_plastico = Material(0.8f, 64);         // Brillo suave tÌpico de pl·stico
+	Material_goma = Material(0.05f, 1);             // Pr·cticamente sin brillo
+	Material_vidrio = Material(3.5f, 256);          // Brillo similar al vidrio
+	Material_seda = Material(0.4f, 16);             // Brillo suave como tela
+	Material_madera = Material(0.2f, 8);
+	Material_piso = Material(0.25f, 16);
 
+	//==================DIRECCIONAL==================
 
-	//luz direccional, s√≥lo 1 y siempre debe de existir
-	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
-		0.5f, 0.5,
-		0.0f, -1.0f, 0.0f);
+	//Contador de luces direccionales
+	LightDAY = DirectionalLight(1.0f, 1.0f, 0.9f, 0.4f, 0.6f, 0.0f, -1.0f, 0.0f);
+	LightNIGHT = DirectionalLight(0.8f, 0.8f, 1.0f, 0.1f, 0.2f, 0.0f, -1.0f, 0.0f);
 
 	//==================POINTLIGHTS==================
 
@@ -654,7 +706,7 @@ int main()
 	pointLights[0] = PointLight(1.0f, 0.0f, 0.0f,
 		//Intensidad ambiental y tonalidad
 		1.0f, 8.0f,
-		//Posici√≥n x, y, z
+		//PosiciÛn x, y, z
 		0.0f, 10.0f, 0.0f,
 		//No poner en 0.0f, 0.0f, 0.0f en la linea de abajo
 		1.0f, 0.2f, 0.1f);
@@ -664,7 +716,7 @@ int main()
 	pointLights[1] = PointLight(0.0f, 1.0f, 0.0f,
 		//Intensidad ambiental y tonalidad
 		1.0f, 8.0f,
-		//Posici√≥n x, y, z
+		//PosiciÛn x, y, z
 		-34.0f, 10.0f, -25.0f,
 		//No poner en 0.0f, 0.0f, 0.0f en la linea de abajo
 		1.0f, 0.2f, 0.1f);
@@ -674,7 +726,7 @@ int main()
 	pointLights[2] = PointLight(0.0f, 0.0f, 1.0f,
 		//Intensidad ambiental y tonalidad
 		1.0f, 8.0f,
-		//Posici√≥n x, y, z
+		//PosiciÛn x, y, z
 		34.0f, 10.0f, -25.0f,
 		//No poner en 0.0f, 0.0f, 0.0f en la linea de abajo
 		1.0f, 0.2f, 0.1f);
@@ -689,13 +741,13 @@ int main()
 	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
 		//Intensidad ambiental y tonalidad
 		0.0f, 0.0f,
-		//Posici√≥n x, y, z
+		//PosiciÛn x, y, z
 		0.0f, 0.0f, 0.0f,
-		//Direcci√≥n de la luz
+		//DirecciÛn de la luz
 		0.0f, -1.0f, 0.0f,
 		//No poner en 0.0f, 0.0f, 0.0f en la linea de abajo
 		1.0f, 0.0f, 0.0f,
-		//√Ångulo de apertura
+		//¡ngulo de apertura
 		5.0f);
 	spotLightCount++;
 
@@ -703,13 +755,13 @@ int main()
 	spotLights[1] = SpotLight(1.0f, 0.0f, 1.0f,
 		//Intensidad ambiental y tonalidad
 		2.0f, 1.0f,
-		//Posici√≥n x, y, z
+		//PosiciÛn x, y, z
 		29.4f, 1.5f, 8.0f,
-		//Direcci√≥n de la luz
+		//DirecciÛn de la luz
 		-1.0f, 0.0f, 1.0f,
 		//No poner en 0.0f, 0.0f, 0.0f en la linea de abajo
 		1.0f, 0.05f, 0.0f,
-		//√Ångulo de apertura
+		//¡ngulo de apertura
 		8.0f);
 	spotLightCount++;
 
@@ -717,13 +769,13 @@ int main()
 	spotLights[2] = SpotLight(1.0f, 1.0f, 0.0f,
 		//Intensidad ambiental y tonalidad
 		2.0f, 1.0f,
-		//Posici√≥n x, y, z
+		//PosiciÛn x, y, z
 		-29.4f, 1.5f, 8.0f,
-		//Direcci√≥n de la luz
+		//DirecciÛn de la luz
 		1.0f, 0.0f, 1.0f,
 		//No poner en 0.0f, 0.0f, 0.0f en la linea de abajo
 		1.0f, 0.05f, 0.0f,
-		//√Ångulo de apertura
+		//¡ngulo de apertura
 		8.0f);
 	spotLightCount++;
 
@@ -733,6 +785,35 @@ int main()
 	GLuint uniformColor = 0;
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
 	////Loop mientras no se cierra la ventana
+	
+	//Iluminacion
+	tiempoDurante = 0.0f;
+	Ciclo_Dia = true;
+
+	//Movimiento de patas
+	MovPataOffset = 3.0f;
+
+	//Dados
+	movDado = 0.0f;
+	movDadoOffset = 0.05f;
+	rotDado = 0.0f;
+	rotDadoOffset = 5.0f;
+	caer = true;
+
+	//Hacha
+	movHacha = 0.0f;
+	movHachaOffset = 0.5f;
+	rotHacha = 0.0f;
+	rotHachaOffset = 1.0f;
+	avanza = true;
+
+	//Bola
+	movBola = 0.0f;
+	movBolaOffset = 0.1f;
+	rotBola = 0.0f;
+	rotBolaOffset = 1.0f;
+	avanzaBola=true;
+
 	while (!mainWindow.getShouldClose())
 	{
 		GLfloat now = glfwGetTime();
@@ -740,8 +821,13 @@ int main()
 		deltaTime += (now - lastTime) / limitFPS;
 		lastTime = now;
 		angulovaria += 1.0f * deltaTime;
-		anguloRotacion += 1.0f; // Ajusta este valor para cambiar la velocidad de rotaci√≥n
+		anguloRotacion += 1.0f; // Ajusta este valor para cambiar la velocidad de rotaciÛn
 
+		tiempoDurante += deltaTime;
+		if (tiempoDurante >= tiempoCiclo) { Ciclo_Dia = !Ciclo_Dia; tiempoDurante = 0.0f; }
+
+		float angle = (tiempoDurante / tiempoCiclo) * M_PI;
+		float xDir = cos(angle);
 
 		//Recibir eventos del usuario
 		glfwPollEvents();
@@ -751,16 +837,19 @@ int main()
 		// Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
-		double tiempoActualSkybox = glfwGetTime();
-		double tiempoCiclo = fmod(tiempoActualSkybox, 120.0);
 
-		if (tiempoCiclo < 60.0) {
+		//Ciclo del dia y la noche
+		if (Ciclo_Dia) {
+			LightDAY.SetDirection(xDir, -0.25f, 0.0f);
+			shaderList[0].SetDirectionalLight(&LightDAY);
 			skyboxdia.DrawSkybox(camera.calculateViewMatrix(), projection);
 		}
 		else {
+			LightNIGHT.SetDirection(xDir, -0.25f, 0.0f);
+			shaderList[0].SetDirectionalLight(&LightNIGHT);
 			skyboxnoche.DrawSkybox(camera.calculateViewMatrix(), projection);
 		}
+
 
 		shaderList[0].UseShader();
 		uniformModel = shaderList[0].GetModelLocation();
@@ -769,7 +858,7 @@ int main()
 		uniformEyePosition = shaderList[0].GetEyePositionLocation();
 		uniformColor = shaderList[0].getColorLocation();
 
-		//informaci√≥n en el shader de intensidad especular y brillo
+		//informaciÛn en el shader de intensidad especular y brillo
 		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
 		uniformShininess = shaderList[0].GetShininessLocation();
 
@@ -777,28 +866,19 @@ int main()
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
 		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
-		// luz ligada a la c√°mara de tipo flash
-		//sirve para que en tiempo de ejecuci√≥n (dentro del while) se cambien propiedades de la luz
+		// luz ligada a la c·mara de tipo flash
+		//sirve para que en tiempo de ejecuciÛn (dentro del while) se cambien propiedades de la luz
 		glm::vec3 lowerLight = camera.getCameraPosition();
 		lowerLight.y -= 0.3f;
 		spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
 
-		if (tiempoCiclo < 60.0) {
-			mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
-				0.5f, 0.5f,        
-				0.0f, -1.0f, 0.0f);
-		}
-		else {
-			mainLight = DirectionalLight(0.1f, 0.1f, 0.5f,
-				0.8f, 0.8f,
-				0.0f, -1.0f, 0.0f);
-		}
-		
-		//informaci√≥n al shader de fuentes de iluminaci√≥n
-		shaderList[0].SetDirectionalLight(&mainLight);
+		//informaciÛn al shader de fuentes de iluminaciÛn
+		if (Ciclo_Dia) { shaderList[0].SetDirectionalLight(&LightDAY); }
+		else { shaderList[0].SetDirectionalLight(&LightNIGHT); }
+
 
 		//Pasar luces al shader
-		if (tiempoCiclo < 60.0)
+		if (Ciclo_Dia)
 			shaderList[0].SetPointLights(pointLights, pointLightCount - 3);
 		else
 			shaderList[0].SetPointLights(pointLights, pointLightCount);
@@ -841,7 +921,7 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_piso.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Piso_M.RenderModel();
 
 		//Laser 1
@@ -890,88 +970,88 @@ int main()
 		model = glm::translate(model, glm::vec3(-10.0f, 8.49f, 50.842f));
 		model = glm::rotate(model, anguloPuerta * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		PuertaN_1.RenderModel();
 		model = modelauxPuertas;
 		model = glm::translate(model, glm::vec3(10.0f, 8.49f, 50.842f));
 		model = glm::rotate(model, anguloPuerta * toRadians, glm::vec3(0.0f, -1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		PuertaN_2.RenderModel();
 
 		model = modelauxPuertas;
 		model = glm::translate(model, glm::vec3(-30.161f, 7.5f, -42.403f));
 		model = glm::rotate(model, anguloPuerta * toRadians, glm::vec3(0.0f, -1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		PuertaR_1.RenderModel();
 		model = modelauxPuertas;
 		model = glm::translate(model, glm::vec3(-44.141f, 7.5f, -27.561f));
 		model = glm::rotate(model, anguloPuerta * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		PuertaR_2.RenderModel();
 
 		model = modelauxPuertas;
 		model = glm::translate(model, glm::vec3(42.612f, 13.861f, -28.45f));
 		model = glm::rotate(model, anguloPuerta * toRadians, glm::vec3(0.0f, -1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		PuertaV_1.RenderModel();
 		model = modelauxPuertas;
 		model = glm::translate(model, glm::vec3(27.255f, 13.861f, -43.279f));
 		model = glm::rotate(model, anguloPuerta * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		PuertaV_2.RenderModel();
 
-		//M√°quinas para introducir moneda
-		//M√°quina para lanzamiento de dados
+		//M·quinas para introducir moneda
+		//M·quina para lanzamiento de dados
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-20.0f, -0.03f, -32.0f));
 		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		MaquinaMoneda_M.RenderModel();
 
-		//M√°quina para l√≠nea de boliche
+		//M·quina para lÌnea de boliche
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(20.5f, -0.03f, -32.0f));
 		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		MaquinaMoneda_M.RenderModel();
 
-		//M√°quina para jaula de bateo
+		//M·quina para jaula de bateo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-40.0f, -0.03f, -3.5f));
 		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		MaquinaMoneda_M.RenderModel();
 
-		//M√°quina para lanzamiento de hacha
+		//M·quina para lanzamiento de hacha
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(37.0f, -0.03f, -3.5f));
 		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		MaquinaMoneda_M.RenderModel();
 
-		//M√°quina para dardos y globos
+		//M·quina para dardos y globos
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-25.5f, -0.03f, 32.0f));
 		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		MaquinaMoneda_M.RenderModel();
 
-		//M√°quina para golpea al topo
+		//M·quina para golpea al topo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(21.0f, -0.03f, 32.0f));
 		model = glm::scale(model, glm::vec3(0.07f, 0.07f, 0.07f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		MaquinaMoneda_M.RenderModel();
 
 		//Bancas
@@ -979,14 +1059,14 @@ int main()
 		model = glm::translate(model, glm::vec3(-35.5f, 1.2, 17.0));
 		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		banca_M.RenderModel();
 
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(35.5f, 1.2f, 17.0));
 		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		banca_M.RenderModel();
 
 		//Bocinas
@@ -994,26 +1074,26 @@ int main()
 		model = glm::translate(model, glm::vec3(-1.0f, 1.5f, -40.0));
 		model = glm::rotate(model, -45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		bocina.RenderModel();
 
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(1.0f, 1.5f, -40.0));
 		model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		bocina.RenderModel();
 
 		//Botes
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-25.0f, 0.9f, 0.0));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		bote_b.RenderModel();
 
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(25.0f, 0.9f, 0.0));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		bote_b.RenderModel();
 
@@ -1023,13 +1103,13 @@ int main()
 		modelauxlamp = model;
 		model = glm::scale(model, glm::vec3(0.3f, 0.5f, 0.3f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		poste.RenderModel();
 		model = modelauxlamp;
 		model = glm::translate(model, glm::vec3(0.0f, 5.0f, 0.0));
 		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_seda.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		farola.RenderModel();
 
 		model = glm::mat4(1.0);
@@ -1037,13 +1117,13 @@ int main()
 		modelauxlamp = model;
 		model = glm::scale(model, glm::vec3(0.3f, 0.5f, 0.3f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		poste.RenderModel();
 		model = modelauxlamp;
 		model = glm::translate(model, glm::vec3(0.0f, 5.0f, 0.0));
 		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_seda.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		farola.RenderModel();
 
 		model = glm::mat4(1.0);
@@ -1051,34 +1131,58 @@ int main()
 		modelauxlamp = model;
 		model = glm::scale(model, glm::vec3(0.3f, 0.5f, 0.3f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		poste.RenderModel();
 		model = modelauxlamp;
 		model = glm::translate(model, glm::vec3(0.0f, 5.0f, 0.0));
 		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_seda.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		farola.RenderModel();
 
 		//====== ATRACCIONES ======
 		//Lanzamiento de hacha
+		girarHacha = mainWindow.getarticulacion4();
+		if (girarHacha==1) {
+			if (movHacha > -30.0f)
+			{
+				movHacha -= movHachaOffset * deltaTime;
+				rotHacha -= rotHachaOffset * deltaTime;
+			}
+			else
+			{
+				avanza = false;
+			}
+		}
+		else {
+			if (movHacha < 0.0f)
+			{
+				movHacha += movHachaOffset * deltaTime;
+				rotHacha += rotHachaOffset * deltaTime;
+			}
+			else
+			{
+				avanza = true;
+			}
+		}
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(40.0f, 3.2f, -3.5f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_madera.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		cabina.RenderModel();
 		//diana
 		model = glm::translate(model, glm::vec3(15.0f, 5.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_madera.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		diana.RenderModel();
 		//Hacha
-		model = glm::translate(model, glm::vec3(-3.0f, -5.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(movHacha -3.0f,-5.0f, 0.0f));
+		model = glm::rotate(model, rotHacha * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		hacha_M.RenderModel();
 
 		//Mesa de dados
@@ -1088,7 +1192,7 @@ int main()
 		modelauxDados = model;
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_madera.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Base_M.RenderModel();
 
 		//Borde de la mesa
@@ -1096,7 +1200,7 @@ int main()
 		model = glm::translate(model, glm::vec3(0.0f, 1.51f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_madera.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Borde_M.RenderModel();
 
 		//Tablero de la mesa de dados
@@ -1105,7 +1209,7 @@ int main()
 		modelauxDados = model;
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_madera.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Tablero_M.RenderModel();
 
 		//Monedas decorativas para la mesa de dados
@@ -1115,7 +1219,7 @@ int main()
 		model = glm::rotate(model, 270 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Moneda_M.RenderModel();
 
 		model = modelauxDados;
@@ -1124,30 +1228,81 @@ int main()
 		model = glm::rotate(model, 270 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Moneda_M.RenderModel();
+
+		dadoCaido = mainWindow.getarticulacion3();
+		if (dadoCaido == 1) {
+			if (movDado > -1.0f)
+			{
+				movDado -= movDadoOffset * deltaTime;
+				rotDado -= rotDadoOffset * deltaTime;
+			}
+			else
+			{
+				caer = false;
+			}
+		}
+		else {
+			if (movDado < 0.0f)
+			{
+				movDado += movDadoOffset * deltaTime;
+				rotDado += rotDadoOffset * deltaTime;
+			}
+			else
+			{
+				caer = true;
+			}
+		}
 
 		//Dados para la mesa de dados
 		model = modelauxDados;
-		model = glm::translate(model, glm::vec3(2.0f, 0.11f, 1.0f));
+		model = glm::translate(model, glm::vec3(2.0f, 0.11f - movDado, 1.0f));
+		model = glm::rotate(model, rotDado * toRadians, glm::vec3(1.0f, 1.0f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Dado_M.RenderModel();
 
 		model = modelauxDados;
-		model = glm::translate(model, glm::vec3(2.0f, 0.11f, 1.2f));
+		//model = glm::translate(model, glm::vec3(2.0f, 0.11f, 1.2f));
+		model = glm::translate(model, glm::vec3(2.0f, 0.11f - movDado, 1.2f));
+		model = glm::rotate(model, rotDado * toRadians, glm::vec3(1.0f, 1.0f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Dado_M.RenderModel();
 
-		//L√≠nea de Boliche
+		//LÌnea de Boliche
 		//Pista de boliche
+		girarHacha = mainWindow.getarticulacion5();
+		if (girarHacha == 1) {
+			if (movBola > -14.0f)
+			{
+				movBola -= movBolaOffset * deltaTime;
+				rotBola -= rotBolaOffset * deltaTime;
+			}
+			else
+			{
+				avanzaBola = false;
+			}
+		}
+		else {
+			if (movBola < 0.0f)
+			{
+				movBola += movBolaOffset * deltaTime;
+				rotBola += rotBolaOffset * deltaTime;
+			}
+			else
+			{
+				avanzaBola = true;
+			}
+		}
+
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(25.0f, 0.0f, -32.0f));
 		modelauxBoliche = model;
 		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_madera.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		PistaBoliche_M.RenderModel();
 
 		//Canaleta izqueirda de boliche
@@ -1155,7 +1310,7 @@ int main()
 		model = glm::translate(model, glm::vec3(-2.8f, 0.2f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		CanaletaBoliche_M.RenderModel();
 
 		//Canaleta derecha de boliche
@@ -1163,15 +1318,17 @@ int main()
 		model = glm::translate(model, glm::vec3(2.8f, 0.2f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		CanaletaBoliche_M.RenderModel();
 
 		//Bola de boliche
 		model = modelauxBoliche;
-		model = glm::translate(model, glm::vec3(0.0f, 1.0f, 8.0f));
+		//model = glm::translate(model, glm::vec3(0.0f, 1.0f, 8.0f));
+		model = glm::translate(model, glm::vec3(0.0f + movBola*0.2, 1.0f, movBola + 8.0f));
+		model = glm::rotate(model, rotBola * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		BolaBoliche_M.RenderModel();
 
 		//Bolos
@@ -1179,70 +1336,70 @@ int main()
 		model = glm::translate(model, glm::vec3(0.0f, 0.6f, -5.0f));
 		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Bolo_M.RenderModel();
 
 		model = modelauxBoliche;
 		model = glm::translate(model, glm::vec3(-0.35f, 0.6f, -5.6f));
 		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Bolo_M.RenderModel();
 
 		model = modelauxBoliche;
 		model = glm::translate(model, glm::vec3(0.35f, 0.6f, -5.6f));
 		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Bolo_M.RenderModel();
 
 		model = modelauxBoliche;
 		model = glm::translate(model, glm::vec3(-0.7f, 0.6f, -6.2f));
 		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Bolo_M.RenderModel();
 
 		model = modelauxBoliche;
 		model = glm::translate(model, glm::vec3(0.0f, 0.6f, -6.2f));
 		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Bolo_M.RenderModel();
 
 		model = modelauxBoliche;
 		model = glm::translate(model, glm::vec3(0.7f, 0.6f, -6.2f));
 		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Bolo_M.RenderModel();
 
 		model = modelauxBoliche;
 		model = glm::translate(model, glm::vec3(-1.05f, 0.6f, -6.8f));
 		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Bolo_M.RenderModel();
 
 		model = modelauxBoliche;
 		model = glm::translate(model, glm::vec3(-0.35f, 0.6f, -6.8f));
 		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Bolo_M.RenderModel();
 
 		model = modelauxBoliche;
 		model = glm::translate(model, glm::vec3(0.35f, 0.6f, -6.8f));
 		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Bolo_M.RenderModel();
 
 		model = modelauxBoliche;
 		model = glm::translate(model, glm::vec3(1.05f, 0.6f, -6.8f));
 		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Bolo_M.RenderModel();
 
 		//Golpea al topo
@@ -1252,7 +1409,7 @@ int main()
 		modelauxTopo = model;
 		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_madera.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		MesaTopo_M.RenderModel();
 
 		//Letrero golpea al topo
@@ -1260,7 +1417,7 @@ int main()
 		model = glm::translate(model, glm::vec3(0.0f, 1.3f, -1.75f));
 		model = glm::scale(model, glm::vec3(0.3f, 0.37f, 0.3f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		LetreroTopo_M.RenderModel();
 
 		//Hoyos
@@ -1348,7 +1505,7 @@ int main()
 		}
 		model = glm::scale(model, glm::vec3(0.08f, 0.08f, 0.08f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		TopoHDA_M.RenderModel();
 
 		//Topo 2
@@ -1361,7 +1518,7 @@ int main()
 		}
 		model = glm::scale(model, glm::vec3(0.08f, 0.08f, 0.08f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		TopoBluey_M.RenderModel();
 
 		//Topo 3
@@ -1374,7 +1531,7 @@ int main()
 		}
 		model = glm::scale(model, glm::vec3(0.08f, 0.08f, 0.08f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		TopoDGP_M.RenderModel();
 
 		//Topo 4
@@ -1387,7 +1544,7 @@ int main()
 		}
 		model = glm::scale(model, glm::vec3(0.08f, 0.08f, 0.08f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		TopoBluey_M.RenderModel();
 
 		//Topo 5
@@ -1400,7 +1557,7 @@ int main()
 		}
 		model = glm::scale(model, glm::vec3(0.08f, 0.08f, 0.08f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		TopoDGP_M.RenderModel();
 
 		//Topo 6
@@ -1413,7 +1570,7 @@ int main()
 		}
 		model = glm::scale(model, glm::vec3(0.08f, 0.08f, 0.08f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		TopoHDA_M.RenderModel();
 
 		//Topo 7
@@ -1426,7 +1583,7 @@ int main()
 		}
 		model = glm::scale(model, glm::vec3(0.08f, 0.08f, 0.08f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		TopoDGP_M.RenderModel();
 
 		//Topo 8
@@ -1439,7 +1596,7 @@ int main()
 		}
 		model = glm::scale(model, glm::vec3(0.08f, 0.08f, 0.08f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		TopoHDA_M.RenderModel();
 
 		//Topo 9
@@ -1452,7 +1609,7 @@ int main()
 		}
 		model = glm::scale(model, glm::vec3(0.08f, 0.08f, 0.08f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		TopoBluey_M.RenderModel();
 
 		//Mesa para mazo de golpea al topo
@@ -1461,7 +1618,7 @@ int main()
 		modelauxTopo = model;
 		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_madera.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		MesaMazoTopo_M.RenderModel();
 
 		//Mazo de golpea al topo
@@ -1469,38 +1626,43 @@ int main()
 		model = glm::translate(model, glm::vec3(0.0f, 0.24f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		MazoTopo_M.RenderModel();
 
 		///Lanzamiento de Dardos
-		float cicloTotal = 100.0f; 
-		float cic = fmod(angulovaria, cicloTotal); 
+		float cicloTotal = 100.0f;
+		float cic = fmod(angulovaria, cicloTotal);
 
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-35.2f, 3.36f, -6.7f));
 		model = glm::scale(model, glm::vec3(0.12f, 0.12f, 0.12f));
 		modelauxDardos = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		puesto_Dardos.RenderModel();
 
 		model = modelauxDardos;
 		model = glm::translate(model, glm::vec3(-22.0f, -6.0f, 12.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_seda.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		conejos_Dardos.RenderModel();
 
 		model = modelauxDardos;
 		model = glm::translate(model, glm::vec3(-22.0f, -6.6f, 20.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		cohetes_Dardos.RenderModel();
 
 		model = modelauxDardos;
 		model = glm::translate(model, glm::vec3(22.0f, -6.2f, 12.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_seda.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		osos_Dardos.RenderModel();
 
 		model = modelauxDardos;
 		model = glm::translate(model, glm::vec3(22.0f, -6.6f, 20.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		cohetes_Dardos.RenderModel();
 
 		// --- Primer dardo (centro) ---
@@ -1521,7 +1683,7 @@ int main()
 		if (enVuelo) {
 			float progreso = (cic - 20.0f) / 60.0f;
 			dX1 = iX1 + (gX - iX1) * progreso;
-			dY1 = iY1 + (gY - iY1) * progreso; 
+			dY1 = iY1 + (gY - iY1) * progreso;
 			dZ1 = iZ1 + (gZ - iZ1) * progreso + sin(progreso * M_PI) * 5.0f;
 		}
 		else if (impactado) {
@@ -1535,11 +1697,12 @@ int main()
 			model = glm::rotate(model, glm::radians(cic * 10.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 		}
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		dardo_Dardos.RenderModel();
 
 		// --- Segundo dardo (derecha) ---
 		model = modelauxDardos;
-		float cicloDardo2 = fmod(angulovaria + 15.0f, cicloTotal); 
+		float cicloDardo2 = fmod(angulovaria + 15.0f, cicloTotal);
 		enVuelo = cicloDardo2 >= 20.0f && cicloDardo2 < 80.0f;
 		impactado = cicloDardo2 >= 80.0f;
 		float oX2 = 4.8f;
@@ -1560,7 +1723,7 @@ int main()
 			dZ2 = iZ2 + (oZ2 - iZ2) * progreso + sin(progreso * M_PI) * 5.0f;
 		}
 		else if (impactado) {
-			dX2 = oX2 + 0.3f; 
+			dX2 = oX2 + 0.3f;
 			dY2 = oY2;
 			dZ2 = oZ2;
 		}
@@ -1570,11 +1733,12 @@ int main()
 			model = glm::rotate(model, glm::radians(cicloDardo2 * 10.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 		}
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		dardo_Dardos.RenderModel();
 
 		// --- Tercer dardo (izquierda) ---
 		model = modelauxDardos;
-		float cicloDardo3 = fmod(angulovaria + 15.0f, cicloTotal); 
+		float cicloDardo3 = fmod(angulovaria + 15.0f, cicloTotal);
 		enVuelo = cicloDardo3 >= 20.0f && cicloDardo3 < 80.0f;
 		impactado = cicloDardo3 >= 80.0f;
 		float oX3 = 13.6f;
@@ -1606,84 +1770,100 @@ int main()
 			model = glm::rotate(model, glm::radians(cicloDardo3 * 10.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 		}
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		dardo_Dardos.RenderModel();
 
 		//Primer Fila
 		model = modelauxDardos;
 		model = glm::translate(model, glm::vec3(-11.2f, 11.05f, -21.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		gam_Dardos.RenderModel();
 
 		model = modelauxDardos;
 		model = glm::translate(model, glm::vec3(-5.1f, 11.05f, -21.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		gaz_Dardos.RenderModel();
 
 		model = modelauxDardos;
 		model = glm::translate(model, glm::vec3(1.1f, 11.05f, -21.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		gro_Dardos.RenderModel();
 
 		model = modelauxDardos;
 		model = glm::translate(model, glm::vec3(7.2f, 11.05f, -21.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		gam_Dardos.RenderModel();
 
 		model = modelauxDardos;
 		model = glm::translate(model, glm::vec3(13.6f, 11.05f, -21.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		gaz_Dardos.RenderModel();
 
 		//Tercer Fila
 		model = modelauxDardos;
 		model = glm::translate(model, glm::vec3(-11.2f, -2.2f, -21.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		gaz_Dardos.RenderModel();
 
 		model = modelauxDardos;
 		model = glm::translate(model, glm::vec3(-5.1f, -2.2f, -21.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		gro_Dardos.RenderModel();
 
 		model = modelauxDardos;
 		model = glm::translate(model, glm::vec3(1.1f, -2.2f, -21.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		gam_Dardos.RenderModel();
 
 		model = modelauxDardos;
 		model = glm::translate(model, glm::vec3(7.2f, -2.2f, -21.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		gaz_Dardos.RenderModel();
 
 		model = modelauxDardos;
 		model = glm::translate(model, glm::vec3(13.6f, -2.2f, -21.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		gro_Dardos.RenderModel();
 
 		//Segunda Fila
 		model = modelauxDardos;
 		model = glm::translate(model, glm::vec3(-11.2f, 4.7f, -21.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		gro_Dardos.RenderModel();
 
 		model = modelauxDardos;
 		model = glm::translate(model, glm::vec3(-5.1f, 4.5f, -21.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		gam_Dardos.RenderModel();
 
 		model = modelauxDardos;
 		model = glm::translate(model, glm::vec3(1.1f, 4.5f, -21.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		gaz_Dardos.RenderModel();
 
 		model = modelauxDardos;
 		model = glm::translate(model, glm::vec3(7.2f, 4.5f, -21.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		gro_Dardos.RenderModel();
 
 		model = modelauxDardos;
 		model = glm::translate(model, glm::vec3(13.6f, 4.5f, -21.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		gam_Dardos.RenderModel();
 
 		//Jaula de Bateo
@@ -1693,33 +1873,37 @@ int main()
 		model = glm::scale(model, glm::vec3(0.12f, 0.12f, 0.12f));
 		modelauxJaulaB = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		jaulabateo.RenderModel();
 
 		model = modelauxJaulaB;
 		model = glm::translate(model, glm::vec3(24.5f, -25.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_seda.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		alfombra_jaulabateo.RenderModel();
 
 		model = modelauxJaulaB;
 		model = glm::translate(model, glm::vec3(24.5f, -5.4f, 0.0f));
-		float bateRotacion = 45.0f * sin(glm::radians(angulovaria * 2.0f)); 
-		model = glm::rotate(model, glm::radians(bateRotacion), glm::vec3(0.0f, 1.0f, 0.0f)); 
-		model = glm::rotate(model, glm::radians(bateRotacion * 0.5f), glm::vec3(1.0f, 0.0f, 0.0f)); 
+		float bateRotacion = 45.0f * sin(glm::radians(angulovaria * 2.0f));
+		model = glm::rotate(model, glm::radians(bateRotacion), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(bateRotacion * 0.5f), glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_madera.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		bate_jaulabateo.RenderModel();
 
 		model = modelauxJaulaB;
 		model = glm::translate(model, glm::vec3(-34.2f, -1.0f, -0.6f));
 		modelauxJaulaB2 = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		lanzapelotas_jaulabateo.RenderModel();
-		
+
 		model = modelauxJaulaB2;
 		float ciclo = angulovaria - floor(angulovaria / 100.0f) * 100.0f;
-		bool lanzado = ciclo < 10.0f;          
-		bool trayectoria = ciclo >= 10.0f && ciclo < 60.0f;  
-		bool golpeado = ciclo >= 60.0f && ciclo < 65.0f; 
-		bool rebote = ciclo >= 65.0f;                
+		bool lanzado = ciclo < 10.0f;
+		bool trayectoria = ciclo >= 10.0f && ciclo < 60.0f;
+		bool golpeado = ciclo >= 60.0f && ciclo < 65.0f;
+		bool rebote = ciclo >= 65.0f;
 		float iX = 0.0f;
 		float iY = 0.0f;
 		float iZ = 0.0f;
@@ -1728,33 +1912,34 @@ int main()
 		float pelotaZ = 0.0f;
 
 		if (lanzado) {
-			float disparado = ciclo / 10.0f; 
+			float disparado = ciclo / 10.0f;
 			pelotaX = iX + 0.3f * sin(glm::radians(disparado * 720.0f));
 			pelotaY = iY + 0.2f * cos(glm::radians(disparado * 360.0f));
 			pelotaZ = iZ;
 		}
 		else if (trayectoria) {
-			float direccion = (ciclo - 10.0f) / 50.0f; 
+			float direccion = (ciclo - 10.0f) / 50.0f;
 			pelotaX = iX + direccion * 59.0f;
 			pelotaY = iY + 3.0f * sin(glm::radians(direccion * 180.0f));
 			pelotaZ = iZ + 1.0f * sin(glm::radians(direccion * 120.0f));
 		}
 		else if (golpeado) {
-			float direcc = (ciclo - 60.0f) / 5.0f; 
+			float direcc = (ciclo - 60.0f) / 5.0f;
 			pelotaX = iX + 59.0f;
-			pelotaY = iY + 3.0f + direcc * 5.0f; 
-			pelotaZ = iZ + 1.0f + direcc * 3.0f; 
+			pelotaY = iY + 3.0f + direcc * 5.0f;
+			pelotaZ = iZ + 1.0f + direcc * 3.0f;
 		}
 		else {
-			float regreso = (ciclo - 65.0f) / 35.0f; 
-			pelotaX = iX + 56.0f - regreso * 15.0f; 
-			pelotaY = iY + 8.0f + regreso * 10.0f;  
-			pelotaZ = iZ + 4.0f + regreso * 5.0f;  
+			float regreso = (ciclo - 65.0f) / 35.0f;
+			pelotaX = iX + 56.0f - regreso * 15.0f;
+			pelotaY = iY + 8.0f + regreso * 10.0f;
+			pelotaZ = iZ + 4.0f + regreso * 5.0f;
 		}
 		model = glm::translate(model, glm::vec3(pelotaX, pelotaY, pelotaZ));
 		float velocidad = rebote || golpeado ? 45.0f : 15.0f;
-		model = glm::rotate(model, glm::radians(angulovaria * velocidad), glm::vec3(0.0f, 0.0f, 1.0f));
+
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_goma.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		pelota_jaulabateo.RenderModel();
 
 		/*
@@ -1773,86 +1958,86 @@ int main()
 		model = glm::translate(model, glm::vec3(12.5f, 3.25f, 10.0f));
 		model = glm::scale(model, glm::vec3(0.37f, 0.37f, 0.37f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		puesto_bebidas.RenderModel();
 		//Aguas
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		aguas.RenderModel();
 		//Botellas
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_vidrio.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		botellas.RenderModel();
 		//Latas
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		latas.RenderModel();
 		//Vasos
 		modelauxbebidas = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//1
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		vasos.RenderModel();
 		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//2
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		vasos.RenderModel();
 		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//3
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		vasos.RenderModel();
 		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//4
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		vasos.RenderModel();
 		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//5
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		vasos.RenderModel();
 		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//6
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		vasos.RenderModel();
 		model = modelauxbebidas;
 		model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//7
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		vasos.RenderModel();
 		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//8
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		vasos.RenderModel();
 		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//9
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		vasos.RenderModel();
 		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//10
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		vasos.RenderModel();
 		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//11
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		vasos.RenderModel();
 		model = glm::translate(model, glm::vec3(0.0f, 0.2f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//12
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		vasos.RenderModel();
 		//Tarro
 		model = modelauxbebidas;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_madera.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		tarro.RenderModel();
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_madera.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		tarro.RenderModel();
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_madera.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		tarro.RenderModel();
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_madera.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		tarro.RenderModel();
 
 		//Puesto de Pizzas
@@ -1862,7 +2047,7 @@ int main()
 		modelauxPizzas = model;
 		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		PuestoPizzas_M.RenderModel();
 
 		//Pizzas
@@ -1899,14 +2084,14 @@ int main()
 		model = glm::translate(model, glm::vec3(0.4f, 0.71f, 0.8f));
 		model = glm::scale(model, glm::vec3(0.37f, 0.37f, 0.37f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		platos.RenderModel();
 
 		model = modelauxPizzas;
 		model = glm::translate(model, glm::vec3(-8.95f, 0.71f, 0.8f));
 		model = glm::scale(model, glm::vec3(0.37f, 0.37f, 0.37f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		platos.RenderModel();
 
 		//Servilletas
@@ -1924,7 +2109,7 @@ int main()
 		model = glm::translate(model, glm::vec3(-12.0f, 3.25f, -10.0f));
 		model = glm::scale(model, glm::vec3(0.37f, 0.37f, 0.37f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		puesto_tacos.RenderModel();
 		//Tacos
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1932,11 +2117,11 @@ int main()
 		tacos2.RenderModel();
 		//Comal
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		comal.RenderModel();
 		//Platos
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		platos.RenderModel();
 		//salsas
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1947,7 +2132,7 @@ int main()
 		salsa_verde.RenderModel();
 		//tabla
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_madera.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		tabla.RenderModel();
 		//Trompo
 		modelauxTacos = model;
@@ -1963,7 +2148,7 @@ int main()
 		model = modelauxTacos;
 		model = glm::translate(model, glm::vec3(6.572f, -0.333f, -3.446f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		cuchillo.RenderModel();
 		//Servilletas
 		model = modelauxTacos;
@@ -1978,14 +2163,57 @@ int main()
 		model = glm::translate(model, glm::vec3(12.0f, 0.0f, -10.0f));
 		model = glm::scale(model, glm::vec3(0.16f, 0.16f, 0.16f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		hamburguesas_Stripe.RenderModel();
 
 		//====== PERSONAJES ======
 		//Muffin (Bluey)
+		if (mainWindow.turnLeft)
+			MuffinAngulo += 2.0f;
+
+		if (mainWindow.turnRight)
+			MuffinAngulo -= 2.0f;
+
+		if (mainWindow.moveForward)
+		{
+			if (!Caminar) {
+				MovPata += MovPataOffset * deltaTime;
+				if (MovPata > 20.0f) 
+					Caminar = true;
+			}
+			else
+			{
+				MovPata -= MovPataOffset * deltaTime;
+				if (MovPata < -20.0f)
+					Caminar = false;
+			}
+			float rad = glm::radians(MuffinAngulo);
+			MuffinPos.x -= sin(rad) * 0.1f;
+			MuffinPos.z -= cos(rad) * 0.1f;
+		}
+
+		if (mainWindow.moveBackward)
+		{
+			if (!Caminar) {
+				MovPata += MovPataOffset * deltaTime;
+				if (MovPata > 20.0f)
+					Caminar = true;
+			}
+			else
+			{
+				MovPata -= MovPataOffset * deltaTime;
+				if (MovPata < -20.0f)
+					Caminar = false;
+			}
+			float rad = glm::radians(MuffinAngulo);
+			MuffinPos.x += sin(rad) * 0.1f;
+			MuffinPos.z += cos(rad) * 0.1f;
+		}
+
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 1.8f, 53.0));
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, mainWindow.getarticulacion3()));
+		model = glm::translate(model, MuffinPos);
 		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(MuffinAngulo), glm::vec3(0.0f, 1.0f, 0.0f));
 		modelauxMuffin = model;
 		model = glm::scale(model, glm::vec3(0.044f, 0.048f, 0.044f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -2035,12 +2263,14 @@ int main()
 		//Pata Derecha
 		model = modelauxMuffin;
 		model = glm::translate(model, glm::vec3(0.0f, -1.0f, -0.4f));
+		model = glm::rotate(model, MovPata * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 		model = glm::scale(model, glm::vec3(0.045f, 0.055f, 0.045f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		patauno_Muffin.RenderModel();
 		//Pata Izquierda
 		model = modelauxMuffin;
 		model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.4f));
+		model = glm::rotate(model, MovPata * toRadians, glm::vec3(0.0f, 0.0f, -1.0f));
 		model = glm::scale(model, glm::vec3(0.045f, 0.055f, 0.045f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		patados_Muffin.RenderModel();
@@ -2105,7 +2335,7 @@ int main()
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 7.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		dedoocho_Muffin.RenderModel();
-		
+
 		//Bingo NPC (Bluey)
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-30.0f, 2.0f, -2.7f));

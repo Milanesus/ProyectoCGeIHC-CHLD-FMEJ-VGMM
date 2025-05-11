@@ -133,7 +133,7 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 		else
 			theWindow->articulacion1 = 90.0f;
 	}
-
+	//Luz Laser
 	if (key == GLFW_KEY_P && action == GLFW_PRESS)
 	{
 		if (theWindow->articulacion2 == 0.0f)
@@ -141,6 +141,53 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 		else
 			theWindow->articulacion2 = 0.0f;
 	}
+	//Dados
+	if (key == GLFW_KEY_J && action == GLFW_PRESS)
+	{
+		if (theWindow->articulacion3 == 30.0f)
+			theWindow->articulacion3 = 0.0f;
+		else
+			theWindow->articulacion3 = 30.0f;
+	}
+	//Hacha
+	if (key == GLFW_KEY_H && action == GLFW_PRESS)
+	{
+		if (theWindow->articulacion4 == 30.0f)
+			theWindow->articulacion4 = 0.0f;
+		else
+			theWindow->articulacion4 = 30.0f;
+	}
+	//Bolo
+	if (key == GLFW_KEY_B && action == GLFW_PRESS)
+	{
+		if (theWindow->articulacion5 == 30.0f)
+			theWindow->articulacion5 = 0.0f;
+		else
+			theWindow->articulacion5 = 30.0f;
+	}
+
+	if (key == GLFW_KEY_X)
+	{
+		theWindow->articulacion6 += 1.0;
+	}
+
+	if (action == GLFW_PRESS)
+	{
+		if (key == GLFW_KEY_UP) theWindow->moveForward = true;
+		if (key == GLFW_KEY_DOWN) theWindow->moveBackward = true;
+		if (key == GLFW_KEY_LEFT) theWindow->turnLeft = true;
+		if (key == GLFW_KEY_RIGHT) theWindow->turnRight = true;
+	}
+	else if (action == GLFW_RELEASE)
+	{
+		if (key == GLFW_KEY_UP) theWindow->moveForward = false;
+		if (key == GLFW_KEY_DOWN) theWindow->moveBackward = false;
+		if (key == GLFW_KEY_LEFT) theWindow->turnLeft = false;
+		if (key == GLFW_KEY_RIGHT) theWindow->turnRight = false;
+	}
+
+
+
 
 	if (key == GLFW_KEY_D && action == GLFW_PRESS)
 	{
