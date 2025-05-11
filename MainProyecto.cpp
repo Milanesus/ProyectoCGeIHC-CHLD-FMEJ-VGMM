@@ -828,6 +828,7 @@ int main()
 		glm::mat4 modelauxLimonagrio(1.0);
 		glm::mat4 modelauxCucho(1.0);
 		glm::mat4 modelauxJaulaB(1.0);
+		glm::mat4 modelauxJaulaB2(1.0);
 		glm::mat4 modelauxDardos(1.0);
 		glm::mat4 modelauxBingo(1.0);
 		glm::mat4 modelauxBandit(1.0);
@@ -1472,6 +1473,9 @@ int main()
 		MazoTopo_M.RenderModel();
 
 		///Lanzamiento de Dardos
+		float cicloTotal = 100.0f; 
+		float cic = fmod(angulovaria, cicloTotal); 
+
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-35.2f, 3.36f, -6.7f));
 		model = glm::scale(model, glm::vec3(0.12f, 0.12f, 0.12f));
@@ -1499,18 +1503,108 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		cohetes_Dardos.RenderModel();
 
+		// --- Primer dardo (centro) ---
 		model = modelauxDardos;
-		model = glm::translate(model, glm::vec3(0.0f, -10.0f, 24.0f));
+		bool enVuelo = cic >= 20.0f && cic < 80.0f;
+		bool impactado = cic >= 80.0f;
+		float gX = -5.1f;
+		float gY = 10.05f;
+		float gZ = -21.1f;
+		float iX1 = 0.0f;
+		float iY1 = -9.5f;
+		float iZ1 = 24.0f;
+
+		float dX1 = iX1;
+		float dY1 = iY1;
+		float dZ1 = iZ1;
+
+		if (enVuelo) {
+			float progreso = (cic - 20.0f) / 60.0f;
+			dX1 = iX1 + (gX - iX1) * progreso;
+			dY1 = iY1 + (gY - iY1) * progreso; 
+			dZ1 = iZ1 + (gZ - iZ1) * progreso + sin(progreso * M_PI) * 5.0f;
+		}
+		else if (impactado) {
+			dX1 = gX;
+			dY1 = gY;
+			dZ1 = gZ;
+		}
+
+		model = glm::translate(model, glm::vec3(dX1, dY1, dZ1));
+		if (enVuelo || impactado) {
+			model = glm::rotate(model, glm::radians(cic * 10.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		}
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		dardo_Dardos.RenderModel();
 
+		// --- Segundo dardo (derecha) ---
 		model = modelauxDardos;
-		model = glm::translate(model, glm::vec3(4.0f, -9.5f, 24.0f));
+		float cicloDardo2 = fmod(angulovaria + 15.0f, cicloTotal); 
+		enVuelo = cicloDardo2 >= 20.0f && cicloDardo2 < 80.0f;
+		impactado = cicloDardo2 >= 80.0f;
+		float oX2 = 4.8f;
+		float oY2 = 1.1f;
+		float oZ2 = -21.0f;
+		float iX2 = 4.4f;
+		float iY2 = -9.5f;
+		float iZ2 = 24.0f;
+
+		float dX2 = iX2;
+		float dY2 = iY2;
+		float dZ2 = iZ2;
+
+		if (enVuelo) {
+			float progreso = (cicloDardo2 - 20.0f) / 60.0f;
+			dX2 = iX2 + (oX2 - iX2) * progreso;
+			dY2 = iY2 + (oY2 - iY2) * progreso;
+			dZ2 = iZ2 + (oZ2 - iZ2) * progreso + sin(progreso * M_PI) * 5.0f;
+		}
+		else if (impactado) {
+			dX2 = oX2 + 0.3f; 
+			dY2 = oY2;
+			dZ2 = oZ2;
+		}
+
+		model = glm::translate(model, glm::vec3(dX2, dY2, dZ2));
+		if (enVuelo || impactado) {
+			model = glm::rotate(model, glm::radians(cicloDardo2 * 10.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		}
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		dardo_Dardos.RenderModel();
 
+		// --- Tercer dardo (izquierda) ---
 		model = modelauxDardos;
-		model = glm::translate(model, glm::vec3(-4.0f, -9.5f, 24.0f));
+		float cicloDardo3 = fmod(angulovaria + 15.0f, cicloTotal); 
+		enVuelo = cicloDardo3 >= 20.0f && cicloDardo3 < 80.0f;
+		impactado = cicloDardo3 >= 80.0f;
+		float oX3 = 13.6f;
+		float oY3 = -2.2f;
+		float oZ3 = -21.0f;
+
+		float iX3 = -4.4f;
+		float iY3 = -9.5f;
+		float iZ3 = 24.0f;
+
+		float dX3 = iX3;
+		float dY3 = iY3;
+		float dZ3 = iZ3;
+
+		if (enVuelo) {
+			float progreso = (cicloDardo3 - 20.0f) / 60.0f;
+			dX3 = iX3 + (oX3 - iX3) * progreso;
+			dY3 = iY3 + (oY3 - iY3) * progreso;
+			dZ3 = iZ3 + (oZ3 - iZ3) * progreso + sin(progreso * M_PI) * 5.0f;
+		}
+		else if (impactado) {
+			dX3 = oX3 - 0.3f;
+			dY3 = oY3;
+			dZ3 = oZ3;
+		}
+
+		model = glm::translate(model, glm::vec3(dX3, dY3, dZ3));
+		if (enVuelo || impactado) {
+			model = glm::rotate(model, glm::radians(cicloDardo3 * 10.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		}
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		dardo_Dardos.RenderModel();
 
@@ -1607,20 +1701,62 @@ int main()
 		alfombra_jaulabateo.RenderModel();
 
 		model = modelauxJaulaB;
-		model = glm::translate(model, glm::vec3(24.5f, -22.4f, 0.0f));
+		model = glm::translate(model, glm::vec3(24.5f, -5.4f, 0.0f));
+		float bateRotacion = 45.0f * sin(glm::radians(angulovaria * 2.0f)); 
+		model = glm::rotate(model, glm::radians(bateRotacion), glm::vec3(0.0f, 1.0f, 0.0f)); 
+		model = glm::rotate(model, glm::radians(bateRotacion * 0.5f), glm::vec3(1.0f, 0.0f, 0.0f)); 
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		bate_jaulabateo.RenderModel();
 
 		model = modelauxJaulaB;
 		model = glm::translate(model, glm::vec3(-34.2f, -1.0f, -0.6f));
-		modelauxJaulaB = model;
+		modelauxJaulaB2 = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		lanzapelotas_jaulabateo.RenderModel();
 		
-		model = modelauxJaulaB;
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = modelauxJaulaB2;
+		float ciclo = angulovaria - floor(angulovaria / 100.0f) * 100.0f;
+		bool lanzado = ciclo < 10.0f;          
+		bool trayectoria = ciclo >= 10.0f && ciclo < 60.0f;  
+		bool golpeado = ciclo >= 60.0f && ciclo < 65.0f; 
+		bool rebote = ciclo >= 65.0f;                
+		float iX = 0.0f;
+		float iY = 0.0f;
+		float iZ = 0.0f;
+		float pelotaX = 0.0f;
+		float pelotaY = 0.0f;
+		float pelotaZ = 0.0f;
+
+		if (lanzado) {
+			float disparado = ciclo / 10.0f; 
+			pelotaX = iX + 0.3f * sin(glm::radians(disparado * 720.0f));
+			pelotaY = iY + 0.2f * cos(glm::radians(disparado * 360.0f));
+			pelotaZ = iZ;
+		}
+		else if (trayectoria) {
+			float direccion = (ciclo - 10.0f) / 50.0f; 
+			pelotaX = iX + direccion * 59.0f;
+			pelotaY = iY + 3.0f * sin(glm::radians(direccion * 180.0f));
+			pelotaZ = iZ + 1.0f * sin(glm::radians(direccion * 120.0f));
+		}
+		else if (golpeado) {
+			float direcc = (ciclo - 60.0f) / 5.0f; 
+			pelotaX = iX + 59.0f;
+			pelotaY = iY + 3.0f + direcc * 5.0f; 
+			pelotaZ = iZ + 1.0f + direcc * 3.0f; 
+		}
+		else {
+			float regreso = (ciclo - 65.0f) / 35.0f; 
+			pelotaX = iX + 56.0f - regreso * 15.0f; 
+			pelotaY = iY + 8.0f + regreso * 10.0f;  
+			pelotaZ = iZ + 4.0f + regreso * 5.0f;  
+		}
+		model = glm::translate(model, glm::vec3(pelotaX, pelotaY, pelotaZ));
+		float velocidad = rebote || golpeado ? 45.0f : 15.0f;
+		model = glm::rotate(model, glm::radians(angulovaria * velocidad), glm::vec3(0.0f, 0.0f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		pelota_jaulabateo.RenderModel();
+
 		/*
 		//Moneda
 		model = glm::mat4(1.0);
