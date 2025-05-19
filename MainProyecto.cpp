@@ -136,6 +136,7 @@ Model Tablero_M;
 Model Dado_M;
 //Línea de boliche
 Model PistaBoliche_M;
+Model AtrasBoliche_M;
 Model CanaletaBoliche_M;
 Model Bolo_M;
 Model BolaBoliche_M;
@@ -411,6 +412,8 @@ int main()
 	//Línea de boliche
 	PistaBoliche_M = Model();
 	PistaBoliche_M.LoadModel("Models/PistaBoliche_obj.obj");
+	AtrasBoliche_M = Model();
+	AtrasBoliche_M.LoadModel("Models/AtrasBoliche_obj.obj");
 	CanaletaBoliche_M = Model();
 	CanaletaBoliche_M.LoadModel("Models/CanaletaBoliche_obj.obj");
 	Bolo_M = Model();
@@ -1298,7 +1301,7 @@ int main()
 		}
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(25.0f, 0.0f, -32.0f));
+		model = glm::translate(model, glm::vec3(25.0f, 0.0f, -28.0f));
 		modelauxBoliche = model;
 		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1320,6 +1323,14 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		CanaletaBoliche_M.RenderModel();
+
+		//Parte Trasera
+		model = modelauxBoliche;
+		model = glm::translate(model, glm::vec3(0.0f, 2.5f, -9.3f));
+		model = glm::scale(model, glm::vec3(0.405f, 0.405f, 0.405f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_metalico.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		AtrasBoliche_M.RenderModel();
 
 		//Bola de boliche
 		model = modelauxBoliche;
