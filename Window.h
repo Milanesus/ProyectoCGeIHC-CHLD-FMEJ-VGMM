@@ -7,6 +7,7 @@ class Window
 {
 public:
 	Window();
+	// Variables de control de la puerta
 	Window(GLint windowWidth, GLint windowHeight);
 	int Initialise();
 	GLfloat getBufferWidth() { return bufferWidth; }
@@ -27,6 +28,15 @@ public:
 	GLfloat getarticulacion4() { return articulacion4; }
 	GLfloat getarticulacion5() { return articulacion5; }
 	GLfloat getarticulacion6() { return articulacion6; }
+	// Estados de teclas
+	bool moveForward = false;
+	bool moveBackward = false;
+	bool turnLeft = false;
+	bool turnRight = false;
+
+	// Getter para el ángulo actual (opcional si lo manejas fuera)
+	float getCarAngle() const { return carroAngle; }
+	void setCarAngle(float angle) { carroAngle = angle; }
 
 	~Window();
 private:
@@ -40,6 +50,7 @@ private:
 	GLfloat xChange;
 	GLfloat yChange;
 	bool mouseFirstMoved;
+	float carroAngle = 0.0f;
 	void createCallbacks();
 	static void ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode);
 	static void ManejaMouse(GLFWwindow* window, double xPos, double yPos);
